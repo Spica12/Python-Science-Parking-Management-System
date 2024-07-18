@@ -23,3 +23,6 @@ poetry env use .venv\bin\Scripts\python.exe
 ```
 poetry shell
 ```
+
+
+# 
