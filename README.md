@@ -25,4 +25,8 @@ poetry shell
 ```
 
 
-# 
+# Запуск docker-compose
+
+```
+docker-compose up --build
+```
