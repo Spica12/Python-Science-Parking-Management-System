@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "python-science-parking-management-system"
+version = "0.1.0"
+description = "Parking management system based on a computer vision model"
+authors = ["Vitalii Savenko <vitaly.savenko12@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
