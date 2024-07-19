@@ -34,7 +34,7 @@ docker-compose up --build
 # Зайти в контейнер з django (щоб вийти з контейнера необхідно ввести `exit`)
 
 ```
-docker exec -it docker exec -it python-science-parking-management-system-django-1 bash
+docker exec -it python-science-parking-management-system-django-1 bash
 ```
 
 # Виконати міграції бази даних
