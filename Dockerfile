@@ -1,5 +1,6 @@
 # Образ Python
-FROM python:3.12
+# FROM python:3.12
+FROM python:3.11.2-slim
 
 RUN pip install poetry
 WORKDIR /app
