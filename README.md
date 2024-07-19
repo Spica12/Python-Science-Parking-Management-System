@@ -30,3 +30,23 @@ poetry shell
 ```
 docker-compose up --build
 ```
+
+# Зайти в контейнер з django (щоб вийти з контейнера необхідно ввести `exit`)
+
+```
+docker exec -it docker exec -it python-science-parking-management-system-django-1 bash
+```
+
+# Виконати міграції бази даних
+```
+python manage.py migrate
+```
+
+# Створити суперюзера
+
+Зайти в контейнер django
+
+Ввести команду по створенню суперюзера та ввести дані
+```
+python manage.py createsuperuser
+```
