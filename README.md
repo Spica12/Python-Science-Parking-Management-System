@@ -50,3 +50,8 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
+
+# Створити application
+```
+python manage.py startapp appname
+```

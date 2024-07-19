@@ -22,15 +22,15 @@ FROM python:3.11.2-slim
 
 WORKDIR /app
 
-COPY poetry.lock /app/poetry.lock
-COPY pyproject.toml /app/pyproject.toml
 COPY requirements.txt /app/requirements.txt
 COPY .env /app/.env
 
 RUN pip install -r requirements.txt
 
-COPY src /app/src
-COPY manage.py /app/manage.py
+COPY /src /app/src/
+# COPY manage.py /app/manage.py
+
+WORKDIR /app/src
 
 EXPOSE 8000
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
