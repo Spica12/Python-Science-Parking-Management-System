@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Profile</h1>
+    <p>Email: {{ user.email }}</p>
+    <p>Nickname: {{ user.nickname }}</p>
+    <p>Date Joined: {{ user.date_joined }}</p>
+    <p>Verified: {{ user.userrole.is_verified }}</p>
+    
+    {% if not user.userrole.is_verified %}
+    <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post" style="display:none;">
+        {% csrf_token %}
+    </form>
+    <button type="button" onclick="document.getElementById('verificationForm').submit();">Send Verification Email</button>
+    {% endif %}
+
+    <a href="{% url 'users:logout' %}">Logout</a>
+</body>
+</html>
