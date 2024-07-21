@@ -25,7 +25,7 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-xw=!_v3y)tkxj0&ll)g8sap5r8i)1j9x3t#ql!2u4(8yfp&u96'
-
+BOT_TOKEN = '7335281461:AAHmQ_ThGOMOP1WgI2zi6rnSuiVT82W9u6c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
