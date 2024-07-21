@@ -1,6 +1,9 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from .models import UserRole
 import six
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+from .models import UserRole
+
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):

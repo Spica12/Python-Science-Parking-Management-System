@@ -104,8 +104,8 @@ DATABASES = {
         "PORT": env("POSTGRES_PORT"),
     }
 }
-
-
+# For test in console
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')

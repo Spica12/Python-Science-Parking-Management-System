@@ -8,13 +8,18 @@
     <p>Email: {{ user.email }}</p>
     <p>Nickname: {{ user.nickname }}</p>
     <p>Date Joined: {{ user.date_joined }}</p>
+    <p>Role: {% if user.userrole.is_admin %}Admin{% else %}Customer{% endif %}</p>
     <p>Verified: {{ user.userrole.is_verified }}</p>
     
     {% if not user.userrole.is_verified %}
-    <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post" style="display:none;">
+    <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post">
         {% csrf_token %}
+        <button type="submit">Send Verification Email</button>
     </form>
-    <button type="button" onclick="document.getElementById('verificationForm').submit();">Send Verification Email</button>
+    {% endif %}
+
+    {% if user.userrole.is_admin %}
+    <a href="{% url 'users:admin_panel' %}">Admin Panel</a>
     {% endif %}
 
     <a href="{% url 'users:logout' %}">Logout</a>

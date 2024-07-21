@@ -35,6 +35,7 @@ class UserRole(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     role = models.CharField(max_length=50)
     is_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     def __str__(self):
