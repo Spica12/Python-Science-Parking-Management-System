@@ -304,7 +304,7 @@ def predict_result(ch_contours):
 
 if __name__ == '__main__':
 
-    models_file_path = './models/'
+    models_file_path = './DS/models/'
     file_model = 'ua-license-plate-recognition-model-37x.h5'
     file_cascad = 'haarcascade_russian_plate_number.xml'
 
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     # model = cv2.imread(full_path_models)
     # cascade = cv2.imread(full_path_cascad)
 
-    img_file_path = './img/'
+    img_file_path = './DS/img/'
     file_img = 'AM0074BB.png'
     full_path_img = os.path.join(img_file_path, file_img)
 

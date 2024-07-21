@@ -17,7 +17,7 @@ from keras.layers import Dense, Flatten, MaxPooling2D, Dropout, Conv2D
 
 
 # Визначення шляхів для завантаження ресурсів
-models_file_path = './models/'
+models_file_path = './DS/models/'
 file_model = 'ua-license-plate-recognition-model-37x.h5'
 file_cascad = 'haarcascade_russian_plate_number.xml'
 full_path_models = os.path.join(models_file_path, file_model)  
@@ -258,7 +258,7 @@ if __name__ == '__main__':
 
     # model = load_model(full_path_models)
 
-    img_file_path = './img/'
+    img_file_path = './DS/img/'
     file_img = 'AM0074BB.png'
     full_path_img = os.path.join(img_file_path, file_img)
 
@@ -269,4 +269,4 @@ if __name__ == '__main__':
 
 
     result = get_num_avto(original)
-    print(f'ok - {result}')
+    print(f'ok - {result[0]}')
