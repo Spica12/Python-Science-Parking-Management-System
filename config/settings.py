@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'bot',
-    'plate_model',
+    # 'bot',
+    'parking_service',
 
 ]
 
