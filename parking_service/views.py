@@ -5,6 +5,10 @@ from parking_service.forms import VehicleForm, UploadFileForm
 
 # Create your views here.
 def main_page(request):
+
+    filename = ''
+    manual_plate_number = ''
+
     if request.method == "POST":
 
         # TODO Приймання зображень від користувача
@@ -18,6 +22,16 @@ def main_page(request):
             if manual_plate_number:
                 print(manual_plate_number)
 
+            context = {
+                "filename": filename,
+                'manual_plate_number': manual_plate_number,
+            }
+
+            return render(
+                request,
+                "parking_service/upload_result.html",
+                context=context
+            )
 
 
             # TODO Детекція номерного знаку

@@ -1,0 +1,12 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<p>Upload Result</p>
+
+<p>Filename: {{ filename }}</p>
+<p>Manual Plate Number: {{ manual_plate_number }}</p>
+
+<a href="{% url 'parking_service:main' %}">Back</a>
+
+{% endblock %}
