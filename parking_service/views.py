@@ -4,6 +4,14 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import LicensePlate
 from .utils import get_num_auto_png_io
 
+# Create your views here.
+def main_page(request):
+
+    return render(
+        request,
+        "parking_service/index.html",
+    )
+
 @csrf_exempt
 def upload_image(request):
     if request.method == 'POST':
