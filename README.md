@@ -24,18 +24,19 @@ poetry env use .venv\bin\Scripts\python.exe
 poetry shell
 ```
 
-
 # Запуск docker-compose
 
 ```
 docker-compose up --build
 ```
 
-# Зайти в контейнер з django (щоб вийти з контейнера необхідно ввести `exit`)
+# Зайти в контейнер з django
 
 ```
 docker exec -it python-science-parking-management-system-django-1 bash
 ```
+
+Щоб вийти з контейнера необхідно ввести `exit`
 
 # Виконати міграції бази даних
 ```
@@ -46,10 +47,11 @@ python manage.py migrate
 
 Зайти в контейнер django
 
-Ввести команду по створенню суперюзера та ввести дані
+Ввести команду по створенню суперюзера
 ```
 python manage.py createsuperuser
 ```
+Ввести дані нового юзера
 
 # Створити application
 ```
