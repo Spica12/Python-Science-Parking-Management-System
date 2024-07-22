@@ -1,0 +1,21 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<p>Hello, Vehicles!</p>
+
+<a href="{% url 'parking_service:new_vehicle' %}" role="button">Add new Vehicle</a>
+<ol>
+    {% for vehicle in vehicles %}
+        <li>
+            <p>
+                {{ vehicle.plate_number }}
+                <a href="{% url 'parking_service:del_vehicle' pk=vehicle.pk %}" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-trash">Del</span>
+                </a>
+            </p>
+        </li>
+    {% endfor %}
+</ol>
+
+{% endblock %}
