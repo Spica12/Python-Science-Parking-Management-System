@@ -6,3 +6,4 @@ urlpatterns = [
     path('', include('parking_service.urls', namespace='parking')),
     path('users/', include('users.urls', namespace='users')),
 ]
+
