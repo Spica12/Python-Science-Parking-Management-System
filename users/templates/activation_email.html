@@ -1,0 +1,18 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Activate Your Account</title>
+</head>
+<body>
+    <p>Hi {{ user.nickname }},</p>
+    <p>Please click the link below to activate your account:</p>
+    <p><a href="http://{{ domain }}{% url 'users:verify' uidb64=uid token=token %}">Activate your account</a></p>
+    <br>
+    <p>Best regards,</p>
+    <p>Your Company Name</p>
+    <p>Contact us at: support@yourcompany.com</p>
+</body>
+</html>
+{% endautoescape %}
