@@ -27,6 +27,7 @@ def add_vehicle(request):
         form = VehicleForm(request.POST)
         if form.is_valid():
             vehicle = form.save(commit=False)
+            vehicle.user = request.user
             vehicle.save()
             return redirect("parking_service:vehicles")
     else:
