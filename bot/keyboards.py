@@ -17,8 +17,8 @@ menu = InlineKeyboardMarkup(
     ]
 )
 
-iexit_kb = InlineKeyboardMarkup(
+exit_kb = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="◀️ Повернутись на початок", callback_data="menu")]
+        [InlineKeyboardButton(text="◀️ Повернутись назад", callback_data="menu")]
     ]
 )
