@@ -4,10 +4,10 @@
 
 <p>Hello, World!</p>
 
-<form method="POST" class="record-form">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="save btn btn-default">Save</button>
+    <button type="submit">Upload</button>
 </form>
 
 {% endblock %}

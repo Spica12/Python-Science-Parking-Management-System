@@ -1,30 +1,40 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from parking_service.models import Vehicle
-from parking_service.forms import VehicleForm, LicensePlateForm
+from parking_service.forms import VehicleForm, UploadFileForm
 
 # Create your views here.
 def main_page(request):
     if request.method == "POST":
+
         # TODO Приймання зображень від користувача
-        form = LicensePlateForm(request.POST, request.FILES)
+        form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            licence_plate = form.save(commit=False)
-            licence_plate.save()
+            uploaded_image = request.FILES.get("image")
+            manual_plate_number = request.POST.get("manual_plate_number")
+            if uploaded_image:
+                filename = uploaded_image.name
+                print(filename)
+            if manual_plate_number:
+                print(manual_plate_number)
+
+
+
             # TODO Детекція номерного знаку
             # TODO Виявлення та виділення області з номерним знаком із зображень.
             # TODO Оптичне розпізнавання символів для ідентифікації тексту номерного знаку.
-            
+
             # TODO Пошук номера авто у базі даних зареєстрованих транспортних засобів.
 
             # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час
             # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
             # TODO Якщо машина заблокована, то вивести інформацію, що засіб заблокований
 
-
             return redirect("parking_service:main")
+
+
     else:
-        form = LicensePlateForm()
+        form = UploadFileForm()
 
     return render(
         request,
