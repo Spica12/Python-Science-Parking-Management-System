@@ -29,4 +29,4 @@ def upload_image(request):
                         image=image_file
                     )
                     return JsonResponse({'status': 'success', 'plate_number': plate_number, 'accuracy': accuracy})
-    return render(request, 'upload.html')
+    return render(request, 'parking_service/upload.html')
