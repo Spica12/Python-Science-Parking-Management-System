@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Quotes to Scrape</title>
+    <title>Parking Management System</title>
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
     {% load static %}
     <link rel="stylesheet" href="/static/style.css"/>
@@ -13,7 +13,7 @@
     <main class="container">
         <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px">
             <ul>
-                <li><a href="{% url 'parking_service:main' %}" role="button">Parking Management System</a></li>
+                <li><a href="{% url 'parking_service:main' %}" role="button">Main Page</a></li>
                 {% if user.is_authenticated %}
                     <li>Welcome <b>{{ user.nickname }}!</b></li>
                     <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
