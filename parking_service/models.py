@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from django.db import models
 from users.models import CustomUser
+from vehicles.models import Vehicle
 
 # Create your models here.
 
@@ -13,15 +14,6 @@ class LicensePlate(models.Model):
 
     def __str__(self):
         return self.plate_number
-
-
-class Vehicle(models.Model):
-    plate_number = models.CharField(max_length=10)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-    is_blocked = models.BooleanField(default=False)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    # TODO Додати що засіб заблокований
 
 
 class StatusEnum(Enum):

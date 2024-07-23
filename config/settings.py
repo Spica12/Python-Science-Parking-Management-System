@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     # 'bot',
     'parking_service',
+    'vehicles',
 ]
 
 MIDDLEWARE = [
