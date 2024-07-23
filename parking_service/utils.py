@@ -14,8 +14,8 @@ models_path = Path(__file__).resolve().parent.joinpath("models")
 file_model = "ua-license-plate-recognition-model-37x.h5"
 file_cascade = "haarcascade_russian_plate_number.xml"
 
-full_path_models = "DS/models/ua-license-plate-recognition-model-37x.h5"
-full_path_cascade = "DS/models/haarcascade_russian_plate_number.xml"
+full_path_models = "parking_service/models/ua-license-plate-recognition-model-37x.h5"
+full_path_cascade = "parking_service/models/haarcascade_russian_plate_number.xml"
 
 model = load_model(full_path_models)
 plate_cascade = cv2.CascadeClassifier(full_path_cascade)
