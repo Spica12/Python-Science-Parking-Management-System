@@ -38,9 +38,9 @@ docker exec -it python-science-parking-management-system-django-1 bash
 
 Щоб вийти з контейнера необхідно ввести `exit`
 
-# Виконати міграції бази даних
+# Виконати міграції бази даних в docker-compose
 ```
-python manage.py migrate
+docker-compose exec django python manage.py migrate
 ```
 
 # Створити суперюзера
