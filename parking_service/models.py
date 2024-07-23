@@ -1,3 +1,4 @@
+from enum import Enum, auto
 from django.db import models
 from users.models import CustomUser
 
@@ -16,12 +17,54 @@ class LicensePlate(models.Model):
 
 class Vehicle(models.Model):
     plate_number = models.CharField(max_length=10)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    is_blocked = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    # TODO Додати що засіб заблокований
 
 
+class StatusEnum(Enum):
+    UNDEFINED = 'UNDEFINED'
+    PARKING = 'PARKING'
+    FINISHED = 'FINISHED'
 
+
+STATUS_CHOICES = [(status.name, status.name) for status in StatusEnum]
+
+
+class ParkingSession(models.Model):
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
+    status = models.CharField(choices=STATUS_CHOICES, default=StatusEnum.UNDEFINED.name)
+    started_at = models.DateTimeField(auto_now_add=True)
+    end_at = models.DateTimeField(blank=True, null=True)
+    parking_duration = models.DurationField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.end_at and self.started_at:
+            self.duration = self.end_at - self.started_at
+        super().save(*args, **kwargs)
+
+    def formatted_duration(self):
+        if self.parking_duration:
+            total_seconds = int(self.parking_duration.total_seconds())
+            days = total_seconds // 86400
+            hours = (total_seconds % 86400) // 3600
+            minutes = (total_seconds % 3600) // 60
+            seconds = total_seconds % 60
+
+            result = []
+            if days > 0:
+                result.append(f"{days} д.")
+            if hours > 0:
+                result.append(f"{hours} год.")
+            if minutes > 0:
+                result.append(f"{minutes} хв.")
+            if seconds > 0:
+                result.append(f"{seconds} сек.")
+
+            return ", ".join(result)
+        return ""
 
 # from enum import Enum, auto
 

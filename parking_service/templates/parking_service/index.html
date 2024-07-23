@@ -9,5 +9,8 @@
     {{ form.as_p }}
     <button type="submit">Upload</button>
 </form>
+{% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+{% endif %}
 
 {% endblock %}
