@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from parking_service.models import ParkingSession, StatusEnum
-from vehicles.models import Vehicle
+from parking_service.models import ParkingSession, StatusParkingEnum
+from vehicles.models import Vehicle, StatusVehicleEnum
 from parking_service.forms import UploadFileForm
 
 
@@ -36,7 +36,7 @@ def main_page(request):
             # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
             try:
                 vehicle = Vehicle.objects.get(plate_number=plate_number)
-                if vehicle.is_blocked:
+                if vehicle.status == StatusVehicleEnum.BLOCKED:
                     context = {
                         'form': form,
                         'error_message': 'This vehicle is blocked.'
@@ -48,13 +48,13 @@ def main_page(request):
                 print('Create new vehicle')
 
             try:
-                session = ParkingSession.objects.get(vehicle=vehicle, status=StatusEnum.PARKING)
-                session.status = StatusEnum.FINISHED
+                session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE)
+                session.status = StatusParkingEnum.FINISHED
                 session.end_at = timezone.now()
                 session.parking_duration = session.end_at - session.started_at
                 session.save()
             except ParkingSession.DoesNotExist:
-                session = ParkingSession(vehicle=vehicle, status=StatusEnum.PARKING)
+                session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE)
                 session.save()
 
 
@@ -64,6 +64,8 @@ def main_page(request):
             context = {
                 "filename": filename,
                 'manual_plate_number': manual_plate_number,
+                'status_vehicle': session.vehicle.status,
+                # 'customer': session.vehicle.user.nickname,
                 'status': session.status,
                 'start_parking': session.started_at,
                 'end_parking': session.end_at,

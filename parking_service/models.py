@@ -16,18 +16,18 @@ class LicensePlate(models.Model):
         return self.plate_number
 
 
-class StatusEnum(Enum):
+class StatusParkingEnum(Enum):
     UNDEFINED = 'UNDEFINED'
-    PARKING = 'PARKING'
+    ACTIVE = 'ACTIVE'
     FINISHED = 'FINISHED'
 
 
-STATUS_CHOICES = [(status.name, status.name) for status in StatusEnum]
+STATUS_PARKING_CHOICES = [(status.name, status.name) for status in StatusParkingEnum]
 
 
 class ParkingSession(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
-    status = models.CharField(choices=STATUS_CHOICES, default=StatusEnum.UNDEFINED.name)
+    status = models.CharField(choices=STATUS_PARKING_CHOICES, default=StatusParkingEnum.UNDEFINED.name)
     started_at = models.DateTimeField(auto_now_add=True)
     end_at = models.DateTimeField(blank=True, null=True)
     parking_duration = models.DurationField(blank=True, null=True)
