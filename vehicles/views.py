@@ -31,7 +31,12 @@ def add_vehicle(request):
 
 @login_required(login_url="login")
 def del_vehicle(request, pk):
-    vehicle = get_object_or_404(Vehicle, pk=pk)
+    # vehicle = get_object_or_404(Vehicle, pk=pk)
+    try:
+        vehicle = Vehicle.objects.get(pk=pk)
+    except Vehicle.DoesNotExist:
+        vehicle = None
+        
     if vehicle is not None:
         vehicle.delete()
 
