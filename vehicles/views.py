@@ -55,7 +55,6 @@ def detail_vehicle(request, pk):
 
     parking_sessions = ParkingSession.objects.filter(vehicle=vehicle).all()
 
-    # TODO Розрахувати загальний час паркування
     total_parking_duration = get_total_parking_duration(parking_sessions)
 
     context = {
