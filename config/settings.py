@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    # 'bot',
+    'bot',
     'parking_service',
     'vehicles',
     'adminapp',
