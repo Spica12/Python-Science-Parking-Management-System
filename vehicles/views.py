@@ -36,3 +36,14 @@ def del_vehicle(request, pk):
         vehicle.delete()
 
     return redirect("vehicles:vehicles")
+
+
+@login_required(login_url="login")
+def detail_vehicle(request, pk):
+    # vehicle = get_object_or_404(Vehicle, pk=pk)
+    try:
+        vehicle = Vehicle.objects.get(pk=pk)
+    except Vehicle.DoesNotExist:
+        vehicle = None
+
+    return render(request, "vehicles/detail_vehicle.html", {'vehicle': vehicle})

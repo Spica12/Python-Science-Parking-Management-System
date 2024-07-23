@@ -2,9 +2,20 @@
 
 {% block content %}
 
-<p>My Vehicles</p>
+<p>Detail Vehicle</p>
 
-<ol>
+<a href="{% url 'vehicles:vehicles' %}">Back</a>
+
+<p>Plate Number: {{ vehicle.plate_number }}</p>
+<p>User: {{ vehicle.user }}</p>
+<p>Is Blocked: {{ vehicle.is_blocked }}</p>
+
+<a href="{% url 'vehicles:del_vehicle' pk=vehicle.pk %}" class="btn btn-primary">
+    <span class="glyphicon glyphicon-trash">Del</span>
+</a>
+
+
+<!-- <ol>
     {% for vehicle in vehicles %}
         <li>
             <p>
@@ -16,7 +27,7 @@
         </li>
     {% endfor %}
 </ol>
-<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
+<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a> -->
 
 
 {% endblock %}
