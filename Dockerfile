@@ -28,6 +28,7 @@ RUN pip install -r requirements.txt
 COPY /bot /app/bot
 COPY /config /app/config
 COPY /parking_service /app/parking_service
+COPY /vehicles /app/vehicles
 COPY /users /app/users
 COPY .env /app/.env
 COPY manage.py /app/manage.py
