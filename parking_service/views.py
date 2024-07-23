@@ -12,6 +12,8 @@ def main_page(request):
     if request.method == "POST":
 
         # TODO Приймання зображень від користувача
+        # TODO Додати перевірку на розмір файлу (напркилад, не більше 8 мб)
+        # TODO Додати перевірку на тип файлу (JPG, PNG та інші, якщо треба)
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_image = request.FILES.get("image")
@@ -27,11 +29,6 @@ def main_page(request):
                 'manual_plate_number': manual_plate_number,
             }
 
-            return render(
-                request,
-                "parking_service/upload_result.html",
-                context=context
-            )
 
 
             # TODO Детекція номерного знаку
@@ -44,8 +41,11 @@ def main_page(request):
             # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
             # TODO Якщо машина заблокована, то вивести інформацію, що засіб заблокований
 
-            return redirect("parking_service:main")
-
+            return render(
+                request,
+                "parking_service/upload_result.html",
+                context=context
+            )
 
     else:
         form = UploadFileForm()
