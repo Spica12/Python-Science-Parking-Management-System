@@ -30,6 +30,7 @@ COPY /config /app/config
 COPY /parking_service /app/parking_service
 COPY /vehicles /app/vehicles
 COPY /adminapp /app/adminapp
+COPY /plate_recognition /app/plate_recognition
 COPY /users /app/users
 COPY .env /app/.env
 COPY manage.py /app/manage.py

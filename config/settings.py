@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'parking_service',
     'vehicles',
     'adminapp',
+    'plate_recognition',
 ]
 
 MIDDLEWARE = [
