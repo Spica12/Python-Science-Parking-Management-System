@@ -30,7 +30,7 @@ sleep(5)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
-BOT_TOKEN = '7335281461:AAHmQ_ThGOMOP1WgI2zi6rnSuiVT82W9u6c'
+BOT_TOKEN = env("BOT_TOKEN")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
