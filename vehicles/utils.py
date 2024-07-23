@@ -1,10 +1,24 @@
+from datetime import timedelta
 
 
+def get_total_parking_duration(parking_sessions):
+    total_parking_duration = sum(
+        (session.parking_duration for session in parking_sessions),
+        timedelta()
+    )
 
-def get_total_parking_duration(parking_session):
-    total_parking_duration = 0
+    days = total_parking_duration.days
+    hours, remainder = divmod(total_parking_duration.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
 
-    for session in parking_session:
-        total_parking_duration += session.parking_duration
+    result = []
+    if days > 0:
+        result.append(f"{days} д.")
+    if hours > 0:
+        result.append(f"{hours} год.")
+    if minutes > 0:
+        result.append(f"{minutes} хв.")
+    if seconds > 0:
+        result.append(f"{seconds} сек.")
 
-    return total_parking_duration
+    return ", ".join(result)
