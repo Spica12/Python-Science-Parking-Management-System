@@ -24,13 +24,6 @@ def main_page(request):
             if manual_plate_number:
                 print(manual_plate_number)
 
-            context = {
-                "filename": filename,
-                'manual_plate_number': manual_plate_number,
-            }
-
-
-
             # TODO Детекція номерного знаку
             # TODO Виявлення та виділення області з номерним знаком із зображень.
             # TODO Оптичне розпізнавання символів для ідентифікації тексту номерного знаку.
@@ -40,6 +33,11 @@ def main_page(request):
             # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час
             # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
             # TODO Якщо машина заблокована, то вивести інформацію, що засіб заблокований
+
+            context = {
+                "filename": filename,
+                'manual_plate_number': manual_plate_number,
+            }
 
             return render(
                 request,
