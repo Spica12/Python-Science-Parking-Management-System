@@ -17,8 +17,8 @@
                 {% if user.is_authenticated %}
                     <li>Welcome <b>{{ user.nickname }}!</b></li>
                     <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
+                    <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
                     <li><a href="{% url 'users:logout' %}" role="button">Log Out</a></li>
-                    <li><a href="{% url 'parking_service:vehicles' %}" role="button">My Vehicles</a></li>
                 {% else %}
                     <li><a href="{% url 'users:register' %}" role="button">Sign Up</a></li>
                     <li><a href="{% url 'users:login' %}" role="button">Sign In</a></li>
