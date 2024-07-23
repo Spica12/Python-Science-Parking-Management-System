@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # 'bot',
     'parking_service',
     'vehicles',
+    'adminapp',
 ]
 
 MIDDLEWARE = [
