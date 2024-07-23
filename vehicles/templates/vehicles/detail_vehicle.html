@@ -2,18 +2,32 @@
 
 {% block content %}
 
-<p>Detail Vehicle</p>
+<h1>Detail Vehicle: {{ vehicle.plate_number }}</h1>
 
 <a href="{% url 'vehicles:vehicles' %}">Back</a>
 
-<p>Plate Number: {{ vehicle.plate_number }}</p>
-<p>User: {{ vehicle.user }}</p>
-<p>Is Blocked: {{ vehicle.is_blocked }}</p>
+<p>Status: {{ vehicle.status }}</p>
 
-<a href="{% url 'vehicles:del_vehicle' pk=vehicle.pk %}" class="btn btn-primary">
-    <span class="glyphicon glyphicon-trash">Del</span>
-</a>
-
+{% if parking_sessions %}
+    <table>
+        <thead>
+            <th scope>ID</th>
+            <th scope>Datetime</th>
+            <th scope>Duration</th>
+            <th scope>Status</th>
+        </thead>
+        <tbody>
+            {% for session in parking_sessions %}
+                <tr>
+                    <td>{{ session.pk }}</td>
+                    <td>{{ session.started_at }}</td>
+                    <td>{{ session.formatted_duration }}</td>
+                    <td>{{ session.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
 
 <!-- <ol>
     {% for vehicle in vehicles %}
