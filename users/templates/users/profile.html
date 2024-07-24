@@ -1,32 +1,35 @@
 {% extends "parking_service/base.html" %}
 
 {% block content %}
-
     <h1>Profile</h1>
     <p>Email: {{ user.email }}</p>
     <p>Nickname: {{ user.nickname }}</p>
     <p>Date Joined: {{ user.date_joined }}</p>
-    <p>Role: 
-        {% if user.userrole.is_admin %}
-            Admin
-        {% elif user.userrole.is_operator %}
-            Operator
+    
+    <p>Verified: 
+        {% if user.userrole.is_verified %}
+            <span style="color: green;">✔ Verified</span>
         {% else %}
-            Customer
+            <span style="color: red;">❌ Not Verified</span>
+            <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post" style="margin-top: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="button">Verify User</button>
+            </form>
         {% endif %}
     </p>
-    <p>Verified: {{ user.userrole.is_verified }}</p>
-
-    {% if not user.userrole.is_verified %}
-    <!-- FOR TESTING -->
-    <!-- <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Send Verification Email</button>
-    </form> -->
-    <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Verify User</button>
-    </form>
-    {% endif %}
     
+    <p>Telegram Linked: 
+        {% if user.userrole.telegram_linked %}
+            <span style="color: green;">✔ Linked</span>
+        {% else %}
+            <span style="color: red;">❌ Not Linked</span>
+            <button type="button" class="button" disabled>Link Telegram</button>
+        {% endif %}
+    </p>
+
+    <!-- Manage Profile Button -->
+    <form action="{% url 'users:manage_profile' %}" method="get" style="margin-top: 20px;">
+        <button type="submit" class="button">Manage Profile</button>
+    </form>
+
 {% endblock %}
