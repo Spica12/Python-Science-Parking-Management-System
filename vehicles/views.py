@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
-from parking_service.models import ParkingSession
+from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.utils import get_total_parking_duration
 from users.decorators import user_is_verified
 
@@ -55,7 +55,8 @@ def detail_vehicle(request, pk):
     # except Vehicle.DoesNotExist:
     #     vehicle = None
 
-    parking_sessions = ParkingSession.objects.filter(vehicle=vehicle).all()
+    # TODO Додати фільтер по FINISHED status
+    parking_sessions = ParkingSession.objects.filter(vehicle=vehicle, status=StatusParkingEnum.FINISHED.name).all()
 
     total_parking_duration = get_total_parking_duration(parking_sessions)
 

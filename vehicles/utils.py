@@ -6,19 +6,17 @@ def get_total_parking_duration(parking_sessions):
         (session.parking_duration for session in parking_sessions),
         timedelta()
     )
+    print(total_parking_duration)
 
     days = total_parking_duration.days
     hours, remainder = divmod(total_parking_duration.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
 
     result = []
-    if days > 0:
-        result.append(f"{days} д.")
-    if hours > 0:
-        result.append(f"{hours} год.")
-    if minutes > 0:
-        result.append(f"{minutes} хв.")
-    if seconds > 0:
-        result.append(f"{seconds} сек.")
+    result.append(f"{days} d")
+    result.append(f"{hours} h")
+    result.append(f"{minutes} m")
+    result.append(f"{seconds} s")
 
-    return ", ".join(result)
+
+    return " ".join(result)

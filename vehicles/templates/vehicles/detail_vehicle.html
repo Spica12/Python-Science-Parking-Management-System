@@ -9,26 +9,34 @@
 <p>Status: {{ vehicle.status }}</p>
 <p>Total parking duration: {{ total_parking_duration }}</p>
 
-{% if parking_sessions %}
-    <table>
-        <thead>
-            <th scope>ID</th>
-            <th scope>Datetime</th>
-            <th scope>Duration</th>
-            <th scope>Status</th>
-        </thead>
-        <tbody>
-            {% for session in parking_sessions %}
-                <tr>
-                    <td>{{ session.pk }}</td>
-                    <td>{{ session.started_at }}</td>
-                    <td>{{ session.formatted_duration }}</td>
-                    <td>{{ session.status }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+
+<table>
+    <thead>
+        <th scope>ID</th>
+        <th scope>Datetime</th>
+        <th scope>Duration</th>
+        <th scope>Tariff</th>
+        <th scope>Invoice</th>
+        <th scope>Status</th>
+        <th scope>Detail</th>
+    </thead>
+    {% if parking_sessions %}
+    <tbody>
+        {% for session in parking_sessions %}
+            <tr>
+                <td>{{ session.pk }}</td>
+                <td>{{ session.started_at }}</td>
+                <td>{{ session.formatted_duration.name }}</td>
+                <th></th>
+                <th></th>
+                <td>{{ session.status }}</td>
+                <th></th>
+            </tr>
+        {% endfor %}
+    </tbody>
+    {% endif %}
+</table>
+
 
 <!-- <ol>
     {% for vehicle in vehicles %}

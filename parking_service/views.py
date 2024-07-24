@@ -34,7 +34,7 @@ def main_page(request):
             # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
             try:
                 vehicle = Vehicle.objects.get(plate_number=plate_number)
-                if vehicle.status == StatusVehicleEnum.BLOCKED:
+                if vehicle.status == StatusVehicleEnum.BLOCKED.name:
                     context = {
                         'form': form,
                         'error_message': 'This vehicle is blocked.'
@@ -46,13 +46,13 @@ def main_page(request):
                 print('Create new vehicle')
 
             try:
-                session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE)
-                session.status = StatusParkingEnum.FINISHED
+                session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
+                session.status = StatusParkingEnum.FINISHED.name
                 session.end_at = timezone.now()
-                session.parking_duration = session.end_at - session.started_at
+                # session.parking_duration = session.end_at - session.started_at
                 session.save()
             except ParkingSession.DoesNotExist:
-                session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE)
+                session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
                 session.save()
 
 
