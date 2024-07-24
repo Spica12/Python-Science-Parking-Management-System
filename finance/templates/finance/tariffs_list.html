@@ -1,0 +1,31 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<h1>List Tariffs</h1>
+<a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
+
+{% if tariffs %}
+    <table>
+        <thead>
+            <th scope>ID</th>
+            <th scope>Start Date</th>
+            <th scope>Price</th>
+            <th scope>End Date</th>
+            <th scope>Delete Tariff</th>
+        </thead>
+        <tbody>
+            {% for tariff in tariffs %}
+                <tr>
+                    <td>{{ tariff.pk }}</td>
+                    <td>{{ tariff.start_date }}</td>
+                    <td>{{ tariff.price_per_hour }}</td>
+                    <td>{{ tariff.end_date }}</td>
+                    <td><a href="{% url 'finance:tariff_delete' pk=tariff.pk %}">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}
