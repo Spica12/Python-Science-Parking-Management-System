@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession, StatusParkingEnum
@@ -56,13 +57,18 @@ def detail_vehicle(request, pk):
     #     vehicle = None
 
     # TODO Додати фільтер по FINISHED status
-    parking_sessions = ParkingSession.objects.filter(vehicle=vehicle, status=StatusParkingEnum.FINISHED.name).all()
+    parking_sessions = ParkingSession.objects.filter(vehicle=vehicle).all().order_by("-started_at")
+
+    paginator = Paginator(parking_sessions, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     total_parking_duration = get_total_parking_duration(parking_sessions)
 
     context = {
         'vehicle': vehicle,
         'parking_sessions': parking_sessions,
+        'page_obj': page_obj,
         'total_parking_duration': total_parking_duration,
     }
     return render(request, "vehicles/detail_vehicle.html", context=context)

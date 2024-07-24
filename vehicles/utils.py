@@ -1,9 +1,14 @@
 from datetime import timedelta
 
+from parking_service.models import StatusParkingEnum
+
 
 def get_total_parking_duration(parking_sessions):
+
+    parking_sessions_finished = parking_sessions.filter(status=StatusParkingEnum.FINISHED.name)
+
     total_parking_duration = sum(
-        (session.parking_duration for session in parking_sessions),
+        (session.parking_duration for session in parking_sessions_finished),
         timedelta()
     )
     print(total_parking_duration)
