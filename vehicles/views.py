@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession
+from vehicles.utils import get_total_parking_duration
 
 
 # Create your views here.
@@ -54,8 +55,11 @@ def detail_vehicle(request, pk):
 
     parking_sessions = ParkingSession.objects.filter(vehicle=vehicle).all()
 
+    total_parking_duration = get_total_parking_duration(parking_sessions)
+
     context = {
         'vehicle': vehicle,
         'parking_sessions': parking_sessions,
+        'total_parking_duration': total_parking_duration,
     }
     return render(request, "vehicles/detail_vehicle.html", context=context)
