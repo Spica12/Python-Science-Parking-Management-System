@@ -15,8 +15,6 @@ def main_page(request):
 
     if request.method == "POST":
         # Приймання зображень від користувача
-        # TODO Додати перевірку на розмір файлу (напркилад, не більше 8 мб)
-        # TODO Додати перевірку на тип файлу (JPG, PNG та інші, якщо треба)
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_image = request.FILES.get("image")
