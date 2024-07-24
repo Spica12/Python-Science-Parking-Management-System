@@ -17,7 +17,7 @@
     {% endif %}
 
     {% if user.userrole.is_admin %}
-    <a href="{% url 'users:admin_panel' %}">Admin Panel</a>
+    <a href="{% url 'adminapp:admin_panel' %}">Admin Panel</a>
     {% endif %}
 
     <a href="{% url 'users:logout' %}">Logout</a>

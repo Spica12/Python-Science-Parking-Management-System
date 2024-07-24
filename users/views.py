@@ -13,7 +13,7 @@ from .forms import CustomPasswordResetForm, CustomUserCreationForm, LoginForm
 from .models import CustomUser, UserRole
 from .tokens import account_activation_token
 from .utils import send_activation_email
-from .decorators import user_is_active, user_is_verified, admin_required, admin_or_operator_required
+from .decorators import user_is_active, user_is_verified
 
 def get_user_role(user):
     return get_object_or_404(UserRole, user=user)
@@ -103,65 +103,6 @@ def logout(request):
 
 def email_sent(request):
     return render(request, 'users/email_sent.html')
-
-@admin_required
-def admin_panel(request):
-    query = request.GET.get('query', '')
-    users = CustomUser.objects.all()
-
-    if query:
-        users = users.filter(
-            Q(email__icontains=query) |
-            Q(nickname__icontains=query) |
-            Q(id__icontains=query)
-        )
-
-    return render(request, 'users/admin_panel.html', {'users': users, 'query': query})
-
-@admin_required
-def block_user(request, user_id):
-    user_to_block = get_object_or_404(CustomUser, id=user_id)
-    current_user = request.user
-
-    if user_to_block.userrole.is_admin:
-        messages.error(request, "You cannot block another admin.")
-    else:
-        user_to_block.userrole.is_active = False
-        user_to_block.userrole.save()
-        messages.success(request, f"User {user_to_block.email} has been blocked.")
-    
-    return redirect('users:admin_panel')
-
-@admin_required
-def unblock_user(request, user_id):
-    user_to_unblock = get_object_or_404(CustomUser, id=user_id)
-    user_to_unblock.userrole.is_active = True
-    user_to_unblock.userrole.save()
-    messages.success(request, f"User {user_to_unblock.email} has been unblocked.")
-    return redirect('users:admin_panel')
-
-@admin_required
-def make_admin(request, user_id):
-    user_to_promote = get_object_or_404(CustomUser, id=user_id)
-    if user_to_promote.userrole.is_admin:
-        messages.info(request, "User is already an admin.")
-    else:
-        user_to_promote.userrole.is_admin = True
-        user_to_promote.userrole.is_verified = True
-        user_to_promote.userrole.save()
-        messages.success(request, f"User {user_to_promote.email} has been promoted to admin.")
-    return redirect('users:admin_panel')
-
-@admin_required
-def make_operator(request, user_id):
-    user_to_promote = get_object_or_404(CustomUser, id=user_id)
-    if user_to_promote.userrole.is_operator:
-        messages.info(request, "User is already an operator.")
-    else:
-        user_to_promote.userrole.is_operator = True
-        user_to_promote.userrole.save()
-        messages.success(request, f"User {user_to_promote.email} has been promoted to operator.")
-    return redirect('users:admin_panel')
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'users/password_reset.html'
