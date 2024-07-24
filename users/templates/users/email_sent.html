@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Activation sent</title>
-</head>
-<body>
-    <h2>Activation link sent to your mail! Check it out!</h2>
-</body>
-</html>
+{% extends "parking_service/base_simple.html" %}
+
+{% block title %}Activation Sent{% endblock %}
+
+{% block content %}
+    <h2>Activation Link Sent</h2>
+    <p>An activation link has been sent to your email address. Please check your inbox to complete the activation process.</p>
+{% endblock %}

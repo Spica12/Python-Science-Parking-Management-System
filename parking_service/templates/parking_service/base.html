@@ -12,12 +12,15 @@
 
 <body>
     <main class="container">
-        <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px">
-            <ul>
+        <nav style="margin-bottom: 20px; border-bottom: 2px solid; padding-left: 30px; display: flex; justify-content: space-between;">
+            <ul style="display: flex; align-items: center;">
                 <li><a href="{% url 'parking_service:main' %}" role="button">Main Page</a></li>
                 {% if user.is_authenticated %}
+
                     <li>Welcome <b>{{ user.nickname }}!</b></li>
                     <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
+                    <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
+                    <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">My Payments</a></li>
                     {% if user.userrole.is_admin or user.userrole.is_operator %}
                         <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">Payments</a></li>
                         <li><a href="{% url 'adminapp:admin_panel' %}" role="button">Admin Panel</a></li>
@@ -25,16 +28,21 @@
                         <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
                         <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">My Payments</a></li>
                     {% endif %}
+                    <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
+                {% endif %}
+            </ul>
+            <ul style="display: flex; align-items: center;">
+                {% if user.is_authenticated %}
+                    <li>Welcome <b>{{ user.nickname }}!</b></li>
+                    <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
                     <li><a href="{% url 'users:logout' %}" role="button">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'users:register' %}" role="button">Sign Up</a></li>
                     <li><a href="{% url 'users:login' %}" role="button">Sign In</a></li>
                 {% endif %}
-
             </ul>
         </nav>
         {% block content %}
-
         {% endblock %}
     </main>
 </body>

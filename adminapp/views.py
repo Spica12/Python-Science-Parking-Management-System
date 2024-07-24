@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Q
-
-from users.models import CustomUser
+from users.models import CustomUser, UserRole
 from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
 
@@ -67,4 +66,24 @@ def change_role(request, user_id):
         user_role.role = new_role
         user_role.save()
 
+    return redirect('adminapp:user_management')
+
+@admin_required
+def change_user_status(request, user_id):
+    user_role = get_object_or_404(UserRole, user_id=user_id)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'verify':
+            user_role.is_verified = True
+        elif action == 'unverify':
+            user_role.is_verified = False
+        elif action == 'block':
+            user_role.is_active = False
+        elif action == 'unblock':
+            user_role.is_active = True
+        
+        user_role.save()
+    
     return redirect('adminapp:user_management')
