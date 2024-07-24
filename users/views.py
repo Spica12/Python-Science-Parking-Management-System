@@ -15,6 +15,20 @@ from .tokens import account_activation_token
 from .utils import send_activation_email
 from .decorators import user_is_active, user_is_verified
 
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+@login_required
+def verify_user(request, user_id):
+    user_role = get_object_or_404(UserRole, user_id=user_id)
+    user_role.is_verified = True
+    user_role.save()
+    return redirect('users:profile')
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+
+
 def get_user_role(user):
     return get_object_or_404(UserRole, user=user)
 
@@ -70,7 +84,6 @@ def verify(request, uidb64, token):
 
     return redirect('users:profile')
 
-@login_required
 @user_is_active
 def profile(request):
     user = request.user

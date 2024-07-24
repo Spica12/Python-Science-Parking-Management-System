@@ -6,20 +6,27 @@
     <p>Email: {{ user.email }}</p>
     <p>Nickname: {{ user.nickname }}</p>
     <p>Date Joined: {{ user.date_joined }}</p>
-    <p>Role: {% if user.userrole.is_admin %}Admin{% else %}Customer{% endif %}</p>
+    <p>Role: 
+        {% if user.userrole.is_admin %}
+            Admin
+        {% elif user.userrole.is_operator %}
+            Operator
+        {% else %}
+            Customer
+        {% endif %}
+    </p>
     <p>Verified: {{ user.userrole.is_verified }}</p>
 
     {% if not user.userrole.is_verified %}
-    <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post">
+    <!-- FOR TESTING -->
+    <!-- <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post">
         {% csrf_token %}
         <button type="submit">Send Verification Email</button>
+    </form> -->
+    <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Verify User</button>
     </form>
     {% endif %}
-
-    {% if user.userrole.is_admin %}
-    <a href="{% url 'adminapp:admin_panel' %}">Admin Panel</a>
-    {% endif %}
-
-    <a href="{% url 'users:logout' %}">Logout</a>
-
+    
 {% endblock %}

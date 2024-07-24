@@ -18,6 +18,9 @@
                     <li>Welcome <b>{{ user.nickname }}!</b></li>
                     <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
                     <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
+                    {% if user.userrole.is_admin or user.userrole.is_operator %}
+                        <li><a href="{% url 'adminapp:admin_panel' %}" role="button">Admin Panel</a></li>
+                    {% endif %}
                     <li><a href="{% url 'users:logout' %}" role="button">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'users:register' %}" role="button">Sign Up</a></li>
