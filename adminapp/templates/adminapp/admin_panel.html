@@ -1,0 +1,22 @@
+{% extends 'parking_service/base.html' %}
+
+{% block content %}
+<h1>Admin Panel</h1>
+
+<!-- For Admins -->
+{% if user.userrole.is_admin %}
+    <div>
+        <a href="{% url 'adminapp:user_management' %}" role="button">User Management</a>
+        <a href="#" role="button">Module 2</a>
+        <a href="#" role="button">Module 3</a>
+        <a href="#" role="button">Module 4</a>
+    </div>
+<!-- For Operators -->
+{% elif user.userrole.is_operator %}
+    <div>
+        <a href="#" role="button">Module 1</a>
+        <a href="#" role="button">Module 2</a>
+    </div>
+{% endif %}
+
+{% endblock %}

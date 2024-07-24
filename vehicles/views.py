@@ -4,9 +4,9 @@ from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession
 from vehicles.utils import get_total_parking_duration
+from users.decorators import user_is_verified
 
-
-# Create your views here.
+# @user_is_verified (Replace login_required)
 @login_required(login_url="login")
 def get_vehicles(request):
     vehicles = Vehicle.objects.filter(user=request.user)
@@ -17,6 +17,7 @@ def get_vehicles(request):
         context={'vehicles': vehicles}
     )
 
+# @user_is_verified (Replace login_required)
 @login_required(login_url="login")
 def add_vehicle(request):
     if request.method == "POST":
@@ -31,6 +32,7 @@ def add_vehicle(request):
 
     return render(request, "vehicles/new_vehicle.html", {"form": form})
 
+# @user_is_verified (Replace login_required)
 @login_required(login_url="login")
 def del_vehicle(request, pk):
     # vehicle = get_object_or_404(Vehicle, pk=pk)
@@ -44,7 +46,7 @@ def del_vehicle(request, pk):
 
     return redirect("vehicles:vehicles")
 
-
+# @user_is_verified (Replace login_required)
 @login_required(login_url="login")
 def detail_vehicle(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)

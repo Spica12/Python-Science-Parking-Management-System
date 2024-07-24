@@ -13,18 +13,24 @@ from .forms import CustomPasswordResetForm, CustomUserCreationForm, LoginForm
 from .models import CustomUser, UserRole
 from .tokens import account_activation_token
 from .utils import send_activation_email
+from .decorators import user_is_active, user_is_verified
+
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+@login_required
+def verify_user(request, user_id):
+    user_role = get_object_or_404(UserRole, user_id=user_id)
+    user_role.is_verified = True
+    user_role.save()
+    return redirect('users:profile')
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+    # FOR TESTING DELETE ON RELEASE
+
 
 def get_user_role(user):
     return get_object_or_404(UserRole, user=user)
-
-def user_is_active(view_func):
-    @login_required
-    def _wrapped_view(request, *args, **kwargs):
-        user_role = UserRole.objects.get(user=request.user)
-        if not user_role.is_active:
-            return HttpResponseForbidden("Your account is inactive. Please contact support.")
-        return view_func(request, *args, **kwargs)
-    return _wrapped_view
 
 def register(request):
     if request.method == 'POST':
@@ -33,7 +39,7 @@ def register(request):
             user = form.save(commit=False)
             user.is_active = True
             user.save()
-            UserRole.objects.create(user=user, role='user', is_verified=False)
+            UserRole.objects.create(user=user, role='Customer', is_verified=False)
             return redirect('users:login')
     else:
         form = CustomUserCreationForm()
@@ -78,7 +84,7 @@ def verify(request, uidb64, token):
 
     return redirect('users:profile')
 
-@login_required
+@user_is_active
 def profile(request):
     user = request.user
     user_role = get_user_role(user)
@@ -110,57 +116,6 @@ def logout(request):
 
 def email_sent(request):
     return render(request, 'users/email_sent.html')
-
-def admin_required(view_func):
-    decorated_view_func = login_required(user_passes_test(lambda u: u.userrole.is_admin)(view_func))
-    return decorated_view_func
-
-@admin_required
-def admin_panel(request):
-    query = request.GET.get('query', '')
-    users = CustomUser.objects.all()
-
-    if query:
-        users = users.filter(
-            Q(email__icontains=query) |
-            Q(nickname__icontains=query) |
-            Q(id__icontains=query)
-        )
-
-    return render(request, 'users/admin_panel.html', {'users': users, 'query': query})
-
-@admin_required
-def block_user(request, user_id):
-    user_to_block = get_object_or_404(CustomUser, id=user_id)
-    current_user = request.user
-
-    if user_to_block.userrole.is_admin:
-        messages.error(request, "You cannot block another admin.")
-    else:
-        user_to_block.userrole.is_active = False
-        user_to_block.userrole.save()
-        messages.success(request, f"User {user_to_block.email} has been blocked.")
-    
-    return redirect('users:admin_panel')
-
-@admin_required
-def unblock_user(request, user_id):
-    user_to_unblock = get_object_or_404(CustomUser, id=user_id)
-    user_to_unblock.userrole.is_active = True
-    user_to_unblock.userrole.save()
-    messages.success(request, f"User {user_to_unblock.email} has been unblocked.")
-    return redirect('users:admin_panel')
-
-@admin_required
-def make_admin(request, user_id):
-    user_to_promote = get_object_or_404(CustomUser, id=user_id)
-    if user_to_promote.userrole.is_admin:
-        messages.info(request, "User is already an admin.")
-    else:
-        user_to_promote.userrole.is_admin = True
-        user_to_promote.userrole.save()
-        messages.success(request, f"User {user_to_promote.email} has been promoted to admin.")
-    return redirect('users:admin_panel')
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'users/password_reset.html'
