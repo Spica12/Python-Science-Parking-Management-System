@@ -1,0 +1,28 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<h1>List Tariffs</h1>
+
+{% if tariffs %}
+    <table>
+        <thead>
+            <th scope>ID</th>
+            <th scope>Start Date</th>
+            <th scope>Price</th>
+            <th scope>End Date</th>
+        </thead>
+        <tbody>
+            {% for tariff in tariffs %}
+                <tr>
+                    <td>{{ tariff.pk }}</td>
+                    <td>{{ tariff.start_date }}</td>
+                    <td>{{ tariff.price_per_hour }}</td>
+                    <td>{{ tariff.end_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}
