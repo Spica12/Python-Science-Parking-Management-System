@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 
 from users.models import CustomUser
-from .decorators import admin_required, admin_or_operator_required
+from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
 
 @user_is_active
