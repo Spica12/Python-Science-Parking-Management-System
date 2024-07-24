@@ -18,6 +18,7 @@
                     <li>Welcome <b>{{ user.nickname }}!</b></li>
                     <li><a href="{% url 'users:profile' %}" role="button">Profile</a></li>
                     <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
+                    <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">My Payments</a></li>
                     <li><a href="{% url 'users:logout' %}" role="button">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'users:register' %}" role="button">Sign Up</a></li>
