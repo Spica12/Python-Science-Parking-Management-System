@@ -36,9 +36,22 @@ def add_tariff(request):
 
     return render(request, "finance/tariffs_add.html", {"form": form})
 
-
+@login_required(login_url="login")
 def get_tariffs_list(request):
 
     tariffs = Tariff.objects.all()
 
     return render(request, "finance/tariffs_list.html", {"tariffs": tariffs})
+
+@login_required(login_url="login")
+def delete_tariff(request, pk):
+
+    try:
+        tariff = Tariff.objects.get(pk=pk)
+    except Tariff.DoesNotExist:
+        tariff = None
+
+    if tariff:
+        tariff.delete()
+
+    return redirect("finance:tariffs_list")
