@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from finance.forms import TariffForm
 from finance.models import Tariff
-from users.views import login_required, admin_required
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @login_required(login_url="login")
