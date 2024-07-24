@@ -37,7 +37,7 @@ def register(request):
             return redirect('users:login')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def verification_email(request):
@@ -86,7 +86,7 @@ def profile(request):
     if not user_role.is_active:
         return HttpResponseForbidden("Your account is inactive. Please contact support.")
     
-    return render(request, 'profile.html', {'user': user, 'user_role': user_role})
+    return render(request, 'users/profile.html', {'user': user, 'user_role': user_role})
 
 def login(request):
     if request.method == 'POST':
@@ -102,14 +102,14 @@ def login(request):
                 form.add_error(None, 'Invalid email or password')
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
 
 def logout(request):
     auth_logout(request)
     return redirect('users:login')
 
 def email_sent(request):
-    return render(request, 'email_sent.html')
+    return render(request, 'users/email_sent.html')
 
 def admin_required(view_func):
     decorated_view_func = login_required(user_passes_test(lambda u: u.userrole.is_admin)(view_func))
@@ -127,7 +127,7 @@ def admin_panel(request):
             Q(id__icontains=query)
         )
 
-    return render(request, 'admin_panel.html', {'users': users, 'query': query})
+    return render(request, 'users/admin_panel.html', {'users': users, 'query': query})
 
 @admin_required
 def block_user(request, user_id):
@@ -163,8 +163,8 @@ def make_admin(request, user_id):
     return redirect('users:admin_panel')
 
 class CustomPasswordResetView(PasswordResetView):
-    template_name = 'password_reset.html'
-    email_template_name = 'password_reset_email.html'
-    subject_template_name = 'password_reset_subject.txt'
+    template_name = 'users/password_reset.html'
+    email_template_name = 'users/password_reset_email.html'
+    subject_template_name = 'users/password_reset_subject.txt'
     success_url = reverse_lazy('users:password_reset_done')
     form_class = CustomPasswordResetForm
