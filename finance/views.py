@@ -4,6 +4,7 @@ from django.utils import timezone
 from finance.forms import TariffForm
 from finance.models import Tariff
 from django.contrib.auth.decorators import login_required
+from adminapp.decorators import admin_required, admin_or_operator_required
 
 # Create your views here.
 @login_required(login_url="login")
@@ -16,7 +17,7 @@ def get_payments_list_by_user(request):
         "finance/payments_list.html",
     )
 
-@login_required(login_url="login")
+@admin_or_operator_required
 def add_tariff(request):
     # TODO Додати перевірку чи адмін, якщо ні, то перевести на головну сторінку
 
@@ -43,7 +44,7 @@ def get_tariffs_list(request):
 
     return render(request, "finance/tariffs_list.html", {"tariffs": tariffs})
 
-@login_required(login_url="login")
+@admin_or_operator_required
 def delete_tariff(request, pk):
 
     try:

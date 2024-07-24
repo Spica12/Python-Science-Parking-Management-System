@@ -12,7 +12,9 @@
             <th scope>Start Date</th>
             <th scope>Price</th>
             <th scope>End Date</th>
-            <th scope>Delete Tariff</th>
+            {% if user.userrole.is_admin or user.userrole.is_operator %}
+                <th scope>Delete Tariff</th>
+            {% endif %}
         </thead>
         <tbody>
             {% for tariff in tariffs %}
@@ -21,7 +23,9 @@
                     <td>{{ tariff.start_date }}</td>
                     <td>{{ tariff.price_per_hour }}</td>
                     <td>{{ tariff.end_date }}</td>
-                    <td><a href="{% url 'finance:tariff_delete' pk=tariff.pk %}">Delete</a></td>
+                    {% if user.userrole.is_admin or user.userrole.is_operator %}
+                        <td><a href="{% url 'finance:tariff_delete' pk=tariff.pk %}">Delete</a></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
