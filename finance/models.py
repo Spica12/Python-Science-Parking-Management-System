@@ -16,10 +16,11 @@ class Payment(models.Model):
 
 
 class Tariff(models.Model):
+    description = models. CharField(max_length=255, blank=True)
     price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField(
-        default=datetime.strptime("2999-12-31 23:59:59", "%Y-%m-%d %H:%M:%S")
+    start_date = models.DateField()
+    end_date = models.DateField(
+        default=datetime.strptime("2999-12-31", "%Y-%m-%d")
     )
 
     def __str__(self):

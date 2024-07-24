@@ -5,31 +5,52 @@
 <h1>List Tariffs</h1>
 <a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
 
-{% if tariffs %}
-    <table>
-        <thead>
-            <th scope>ID</th>
-            <th scope>Start Date</th>
-            <th scope>Price</th>
-            <th scope>End Date</th>
-            {% if user.userrole.is_admin or user.userrole.is_operator %}
-                <th scope>Delete Tariff</th>
+
+<table>
+    <thead>
+        <th scope>ID</th>
+        <th scope>Description</th>
+        <th scope>Start Date</th>
+        <th scope>Price</th>
+        <th scope>End Date</th>
+        {% if user.userrole.is_admin or user.userrole.is_operator %}
+            <th scope>Delete Tariff</th>
+        {% endif %}
+    </thead>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
             {% endif %}
-        </thead>
-        <tbody>
-            {% for tariff in tariffs %}
-                <tr>
-                    <td>{{ tariff.pk }}</td>
-                    <td>{{ tariff.start_date }}</td>
-                    <td>{{ tariff.price_per_hour }}</td>
-                    <td>{{ tariff.end_date }}</td>
-                    {% if user.userrole.is_admin or user.userrole.is_operator %}
-                        <td><a href="{% url 'finance:tariff_delete' pk=tariff.pk %}">Delete</a></td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% if page_obj %}
+    <tbody>
+        {% for tariff in page_obj %}
+            <tr>
+                <td>{{ tariff.pk }}</td>
+                <td>{{ tariff.description }}</td>
+                <td>{{ tariff.start_date }}</td>
+                <td>{{ tariff.price_per_hour }}</td>
+                <td>{{ tariff.end_date }}</td>
+                {% if user.userrole.is_admin or user.userrole.is_operator %}
+                    <td><a href="{% url 'finance:tariff_delete' pk=tariff.pk %}">Delete</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    {% endif %}
+</table>
+
 
 {% endblock %}
