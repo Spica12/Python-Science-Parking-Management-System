@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <title>Activate Your Account</title>
 </head>
-<body>
-    <p>Hi {{ user.nickname }},</p>
-    <p>Please click the link below to activate your account:</p>
-    <p><a href="http://{{ domain }}{% url 'users:verify' uidb64=uid token=token %}">Activate your account</a></p>
-    <br>
-    <p>Best regards,</p>
-    <p>Your Company Name</p>
-    <p>Contact us at: support@yourcompany.com</p>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px 0; background-color: #f4f4f4;">
+    <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <p style="font-size: 16px; color: #333333; line-height: 1.5;">Hi {{ user.nickname }},</p>
+        <p style="font-size: 16px; color: #333333; line-height: 1.5;">Please click the link below to activate your account:</p>
+        <p style="text-align: center;">
+            <a href="http://{{ domain }}{% url 'users:verify' uidb64=uid token=token %}" style="color: #ffffff; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 5px; padding: 12px 24px; background-color: #1a73e8; display: inline-block; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); transition: background-color 0.3s, box-shadow 0.3s;">Activate your account</a>
+        </p>
+        <br>
+        <p style="font-size: 16px; color: #333333; line-height: 1.5;">Best regards,</p>
+        <p style="font-size: 16px; color: #333333; line-height: 1.5;">Parking Service</p>
+        <p style="font-size: 16px; color: #333333; line-height: 1.5;">Contact us at: support@yourcompany.com</p>
+    </div>
 </body>
 </html>
 {% endautoescape %}

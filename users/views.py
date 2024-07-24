@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.utils.http import urlsafe_base64_decode
@@ -9,7 +10,8 @@ from django.utils.encoding import force_str
 from django.urls import reverse_lazy
 from django.db.models import Q
 
-from .forms import CustomPasswordResetForm, CustomUserCreationForm, LoginForm
+
+from .forms import CustomPasswordResetForm, CustomUserCreationForm, LoginForm, ManageProfileForm, CustomPasswordChangeForm
 from .models import CustomUser, UserRole
 from .tokens import account_activation_token
 from .utils import send_activation_email
@@ -117,9 +119,46 @@ def logout(request):
 def email_sent(request):
     return render(request, 'users/email_sent.html')
 
+@login_required
+def manage_profile(request):
+    if request.method == 'POST':
+        form = ManageProfileForm(request.POST, instance=request.user, request=request)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('users:profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ManageProfileForm(instance=request.user, request=request)
+
+    return render(request, 'users/manage_profile.html', {'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('users:profile')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'users/change_password.html', {'form': form})
+
 class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     subject_template_name = 'users/password_reset_subject.txt'
     success_url = reverse_lazy('users:password_reset_done')
-    form_class = CustomPasswordResetForm
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'users/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'users/password_reset_confirm.html'
+    success_url = reverse_lazy('users:password_reset_complete')
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'users/password_reset_complete.html'

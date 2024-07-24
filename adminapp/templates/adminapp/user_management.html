@@ -3,7 +3,6 @@
 {% block content %}
 <h1>User Management</h1>
 
-<!-- Search Form with Clear Button -->
 <form method="get" action="{% url 'adminapp:user_management' %}" style="margin-bottom: 20px;">
     <div style="position: relative;">
         <input type="text" name="query" value="{{ query }}" placeholder="Search by email, nickname, or ID" style="padding-right: 30px;">
@@ -15,14 +14,14 @@
     <button type="submit">Search</button>
 </form>
 
-<!-- User Table -->
 <table>
     <thead>
         <tr>
             <th>Email</th>
             <th>Nickname</th>
             <th>Role</th>
-            <th>Active</th>
+            <th>Verified</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -45,26 +44,48 @@
                 </form>
                 {% endif %}
             </td>
-            <td>{{ user.userrole.is_active }}</td>
+            <td>{{ user.userrole.is_verified|yesno:"Verified,Not Verified" }}</td>
+            <td>{{ user.userrole.is_active|yesno:"Active,Blocked" }}</td>
             <td>
                 {% if not user.userrole.is_admin %}
-                    {% if user.userrole.is_active %}
-                        <!-- Block Button -->
-                        <form method="post" action="{% url 'adminapp:block_user' user.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" style="background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer;">Block</button>
-                        </form>
-                    {% else %}
-                        <!-- Unblock Button -->
-                        <form method="post" action="{% url 'adminapp:unblock_user' user.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" style="background-color: #4caf50; color: white; border: none; padding: 5px 10px; cursor: pointer;">Unblock</button>
-                        </form>
-                    {% endif %}
+                    <form method="post" action="{% url 'adminapp:change_user_status' user.id %}" onsubmit="return confirmAction(this);">
+                        {% csrf_token %}
+                        <select name="action" onchange="this.form.submit()">
+                            <option value="">Select action</option>
+                            <option value="verify" {% if user.userrole.is_verified %}disabled{% endif %}>Verify</option>
+                            <option value="unverify" {% if not user.userrole.is_verified %}disabled{% endif %}>Unverify</option>
+                            <option value="block" {% if not user.userrole.is_active %}disabled{% endif %}>Block</option>
+                            <option value="unblock" {% if user.userrole.is_active %}disabled{% endif %}>Unblock</option>
+                        </select>
+                    </form>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    function confirmAction(form) {
+        const action = form.querySelector('select[name="action"]').value;
+        if (!action) return false;
+
+        let message = '';
+        switch (action) {
+            case 'verify':
+                message = 'Are you sure you want to verify this user?';
+                break;
+            case 'unverify':
+                message = 'Are you sure you want to unverify this user?';
+                break;
+            case 'block':
+                message = 'Are you sure you want to block this user?';
+                break;
+            case 'unblock':
+                message = 'Are you sure you want to unblock this user?';
+                break;
+        }
+        return confirm(message);
+    }
+</script>
 {% endblock %}

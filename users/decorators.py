@@ -1,5 +1,4 @@
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from .models import UserRole
 
@@ -15,7 +14,7 @@ def user_is_active(view_func):
     @login_required
     def _wrapped_view(request, *args, **kwargs):
         if not is_active(request.user):
-            return HttpResponseForbidden("Your account is blocked. Please contact support.")
+            return render(request, 'users/blocked.html', status=403)
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -23,6 +22,6 @@ def user_is_verified(view_func):
     @login_required
     def _wrapped_view(request, *args, **kwargs):
         if not is_verified(request.user):
-            return HttpResponseForbidden("Your account is not verified. Please verify your account.")
+            return render(request, 'users/unverified.html', status=403)
         return view_func(request, *args, **kwargs)
     return _wrapped_view
