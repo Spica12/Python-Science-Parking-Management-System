@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Q
-
 from users.models import CustomUser, UserRole
-from .decorators import admin_required, admin_or_operator_required
+from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
 
 @user_is_active
