@@ -1,10 +1,71 @@
-{% extends "parking_service/base.html" %}
-
-{% block content %}
-    <h2>Upload Image</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="image" required><br><br>
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+</head>
+<body>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="image" />
         <button type="submit">Upload</button>
     </form>
-{% endblock %}
+    <div id="result" style="display:none;">
+        <h2>License Plate: <span id="plateNumber"></span></h2>
+        <h3>Accuracy: <span id="accuracy"></span></h3>
+        <h4>Timestamp: <span id="timestamp"></span></h4>
+        <img id="image" src="" alt="Processed Image" />
+    </div>
+    <script>
+        document.getElementById('uploadForm').onsubmit = function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            fetch('/upload/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('plateNumber').textContent = data.plate_number;
+                    document.getElementById('accuracy').textContent = data.accuracy;
+                    document.getElementById('timestamp').textContent = data.timestamp;
+                    document.getElementById('image').src = '/media/' + data.image_url;
+                    document.getElementById('result').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Завантаження зображення</title>
+</head>
+<body>
+    <h1>Завантажте зображення для розпізнавання номерного знака</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Завантажити</button>
+    </form>
+
+    {% if result %}
+        <h2>Розпізнано номерний знак: {{ result }}</h2>
+        <p>Точність: {{ accuracy }}%</p>
+        <img src="{{ img_with_plate_url }}" alt="Зображення з номером">
+        <p>Час розпізнання: {{ timestamp }}</p>
+    {% endif %}
+</body>
+</html>

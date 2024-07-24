@@ -3,6 +3,7 @@ from django.contrib import messages
 from .forms import UploadImageForm
 from .predict_num import get_num_avto
 from django.conf import settings
+from datetime import datetime
 import os
 
 def upload_image(request):
@@ -21,11 +22,23 @@ def upload_image(request):
             img = Image.open(img_path)
 
             # Обробка зображення
-            result, _ = get_num_avto(img)
+            plate_number, image_with_plate = get_num_avto(img)
             
+            # Збереження зображення з номерним знаком
+            plate_image_path = os.path.join(settings.MEDIA_ROOT, 'plate_image.jpg')
+            image_with_plate.save(plate_image_path)
+
             # Виведення результатів
-            messages.success(request, f'Розпізнано номерний знак: {result}')
-            return redirect('upload_image')
+            messages.success(request, f'Розпізнано номерний знак: {plate_number}')
+            messages.success(request, f'Час розпізнавання: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+            
+            # Перехід до сторінки з результатами
+            context = {
+                'form': form,
+                'plate_number': plate_number,
+                'plate_image_url': plate_image_path,
+            }
+            return render(request, 'plate_recognition/results.html', context)
     else:
         form = UploadImageForm()
     

@@ -1,7 +1,10 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from PIL import Image
+import io
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
@@ -244,6 +247,19 @@ def get_num_avto(img_avto):
     predicted_str = predict_result(chars, model)
     num_avto_str = str.replace(predicted_str, '#', '')
     return num_avto_str, num_img
+
+
+# def recognize_license_plate(image_file):
+#     # Збереження картинки
+#     image = Image.open(image_file)
+#     image_bytes = io.BytesIO()
+#     image.save(image_bytes, format='PNG')
+#     image_bytes.seek(0)
+    
+#     file_name = f'license_plate_{int(time.time())}.png'
+#     file_path = default_storage.save(file_name, ContentFile(image_bytes.read()))
+    
+#     return plate_number, accuracy, file_path
 
 ################################################################################
 

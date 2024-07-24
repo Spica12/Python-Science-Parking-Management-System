@@ -3,5 +3,5 @@ from .models import LicensePlate
 
 @admin.register(LicensePlate)
 class LicensePlateAdmin(admin.ModelAdmin):
-    list_display = ('plate_number', 'accuracy', 'detected_at')
+    list_display = ('plate_number', 'detected_at')
     search_fields = ('plate_number',)
