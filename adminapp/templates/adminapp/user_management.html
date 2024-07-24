@@ -1,0 +1,70 @@
+{% extends 'parking_service/base.html' %}
+
+{% block content %}
+<h1>User Management</h1>
+
+<!-- Search Form with Clear Button -->
+<form method="get" action="{% url 'adminapp:user_management' %}" style="margin-bottom: 20px;">
+    <div style="position: relative;">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search by email, nickname, or ID" style="padding-right: 30px;">
+        <!-- Clear Button -->
+        {% if query %}
+            <a href="{% url 'adminapp:user_management' %}" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa; text-decoration: none;">&times;</a>
+        {% endif %}
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+<!-- User Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Nickname</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.nickname }}</td>
+            <td>
+                {% if user.userrole.is_admin %}
+                Admin
+                {% else %}
+                <form method="post" action="{% url 'adminapp:change_role' user.id %}">
+                    {% csrf_token %}
+                    <select name="role" onchange="this.form.submit()">
+                        <option value="Customer" {% if user.userrole.role == 'Customer' %}selected{% endif %}>Customer</option>
+                        <option value="Operator" {% if user.userrole.role == 'Operator' %}selected{% endif %}>Operator</option>
+                        <option value="Admin" {% if user.userrole.role == 'Admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                </form>
+                {% endif %}
+            </td>
+            <td>{{ user.userrole.is_active }}</td>
+            <td>
+                {% if not user.userrole.is_admin %}
+                    {% if user.userrole.is_active %}
+                        <!-- Block Button -->
+                        <form method="post" action="{% url 'adminapp:block_user' user.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer;">Block</button>
+                        </form>
+                    {% else %}
+                        <!-- Unblock Button -->
+                        <form method="post" action="{% url 'adminapp:unblock_user' user.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #4caf50; color: white; border: none; padding: 5px 10px; cursor: pointer;">Unblock</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -14,7 +14,7 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, nickname, password=None, **extra_fields):
         user = self.create_user(email, nickname, password, **extra_fields)
-        UserRole.objects.create(user=user, role='admin', is_admin=True, is_verified=True)
+        UserRole.objects.create(user=user, role='Admin', is_admin=True, is_verified=True)
         return user
 
 class CustomUser(AbstractBaseUser):
@@ -38,6 +38,15 @@ class UserRole(models.Model):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_operator = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_admin:
+            self.role = 'Admin'
+        elif self.is_operator:
+            self.role = 'Operator'
+        else:
+            self.role = 'Customer'
+        super(UserRole, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"Role for {self.user.email}: {self.role}"
