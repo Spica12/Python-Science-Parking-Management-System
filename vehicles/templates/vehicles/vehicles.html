@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>My Vehicles</h1>
-
+<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
 <table>
     <thead>
         <th scope>ID</th>
@@ -11,9 +11,26 @@
         <th scope>Status</th>
         <th scope>Delete Vehicle</th>
     </thead>
-    {% if vehicles %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% if page_obj %}
     <tbody>
-        {% for vehicle in vehicles %}
+        {% for vehicle in page_obj %}
             <tr>
                 <td>{{ vehicle.pk }}</td>
                 <td><a href="{% url 'vehicles:detail_vehicle' pk=vehicle.pk %}">{{ vehicle.plate_number }}</a></td>
@@ -30,7 +47,7 @@
 </table>
 
 
-<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
+
 
 
 {% endblock %}

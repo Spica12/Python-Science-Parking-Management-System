@@ -12,11 +12,15 @@ from users.decorators import user_is_verified
 def get_vehicles(request):
     vehicles = Vehicle.objects.filter(user=request.user)
 
-    return render(
-        request,
-        "vehicles/vehicles.html",
-        context={'vehicles': vehicles}
-    )
+    paginator = Paginator(vehicles, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj
+    }
+
+    return render(request, "vehicles/vehicles.html", context=context)
 
 # @user_is_verified (Replace login_required)
 @login_required(login_url="login")
@@ -67,7 +71,6 @@ def detail_vehicle(request, pk):
 
     context = {
         'vehicle': vehicle,
-        'parking_sessions': parking_sessions,
         'page_obj': page_obj,
         'total_parking_duration': total_parking_duration,
     }
