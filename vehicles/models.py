@@ -6,6 +6,7 @@ from users.models import CustomUser
 class StatusVehicleEnum(Enum):
     ACTIVE = 'ACTIVE'
     BLOCKED = 'BLOCKED'
+    UNREGISTERED = 'UNREGISTERED'
 
 
 STATUS_VEHICLE_CHOICES = [(status.name, status.name) for status in StatusVehicleEnum]
