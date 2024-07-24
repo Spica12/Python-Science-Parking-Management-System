@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Результати розпізнавання</title>
+</head>
+<body>
+    <h1>Результати розпізнавання</h1>
+    <p>Розпізнано номерний знак: {{ plate_number }}</p>
+    <p>Час розпізнавання: {{ request.session['timestamp'] }}</p>
+    <img src="{{ plate_image_url }}" alt="Зображення з номерним знаком">
+    <a href="{% url 'upload_image' %}">Завантажити нове зображення</a>
+</body>
+</html>
