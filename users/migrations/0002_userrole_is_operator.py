@@ -5,8 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("users", "0003_remove_customuser_groups_remove_customuser_is_staff_and_more"),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("users", "0001_initial"),
     ]
+
 
     operations = [
         migrations.AddField(
