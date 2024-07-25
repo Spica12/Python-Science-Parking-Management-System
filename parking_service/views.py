@@ -5,4 +5,5 @@ from django.shortcuts import render
 def main_page(request):
     # TODO Додати вивід поточного тарифу
 
+
     return render(request,"parking_service/index.html",)
