@@ -47,7 +47,7 @@
                 <th></th>
                 <th></th>
                 <td>{{ session.status }}</td>
-                <th></th>
+                <th><a href="{% url 'parking_service:detail_session' pk=session.pk %}">Detail</a></th>
             </tr>
         {% endfor %}
     </tbody>
