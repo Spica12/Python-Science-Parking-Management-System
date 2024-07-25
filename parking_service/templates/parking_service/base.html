@@ -17,9 +17,7 @@
                 <li><a href="{% url 'parking_service:main' %}" role="button">Main Page</a></li>
                 {% if user.is_authenticated %}
                     {% if user.userrole.is_admin or user.userrole.is_operator %}
-                        <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">Payments</a></li>
                         <li><a href="{% url 'adminapp:admin_panel' %}" role="button">Admin Panel</a></li>
-                        <li><a href="{% url 'finance:tariffs_list' %}" role="button">Tariffs</a></li>
                         <li><a href="{% url 'vehicles:vehicles' %}" role="button">Vehicles</a></li>
                     {% else %}
                         <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>

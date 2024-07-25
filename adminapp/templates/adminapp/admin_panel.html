@@ -7,15 +7,15 @@
 {% if user.userrole.is_admin %}
     <div>
         <a href="{% url 'adminapp:user_management' %}" role="button">User Management</a>
-        <a href="#" role="button">Module 2</a>
-        <a href="#" role="button">Module 3</a>
+        <a href="{% url 'finance:tariffs_list' %}" role="button">Parking tariffs</a>
+        <a href="{% url 'finance:payments_list_by_user' %}" role="button">Payment control</a>
         <a href="#" role="button">Module 4</a>
     </div>
 <!-- For Operators -->
 {% elif user.userrole.is_operator %}
     <div>
-        <a href="#" role="button">Module 1</a>
-        <a href="#" role="button">Module 2</a>
+        <a href="{% url 'finance:tariffs_list' %}" role="button">Parking tariffs</a>
+        <a href="{% url 'finance:payments_list_by_user' %}" role="button">Payment control</a>
     </div>
 {% endif %}
 
