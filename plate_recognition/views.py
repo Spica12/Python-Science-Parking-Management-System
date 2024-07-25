@@ -5,6 +5,7 @@ from finance.models import Payment
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm
+from plate_recognition.service_predict import image_plate_recognition
 
 # Create your views here.
 def upload_photo(request):
@@ -30,8 +31,12 @@ def upload_photo(request):
             # TODO Виявлення та виділення області з номерним знаком із зображень.
             # TODO Оптичне розпізнавання символів для ідентифікації тексту номерного знаку.
 
+            predict = image_plate_recognition.predict_plate(file=uploaded_image)
+            plate_predict = predict.get("num_vehicle_str")
+
             # TODO Пошук номера авто у базі даних зареєстрованих транспортних засобів.
             # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
+
             try:
                 vehicle = Vehicle.objects.get(plate_number=plate_number)
                 if vehicle.status == StatusVehicleEnum.BLOCKED.name:
@@ -62,6 +67,7 @@ def upload_photo(request):
             # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
             context = {
                 "filename": filename,
+                'plate_predict': plate_predict,
                 'manual_plate_number': manual_plate_number,
                 'status_vehicle': session.vehicle.status,
                 # 'customer': session.vehicle.user.nickname,
@@ -69,6 +75,7 @@ def upload_photo(request):
                 'start_parking': session.started_at,
                 'end_parking': session.end_at,
                 'parking_duration': session.formatted_duration(),
+                'filename': filename
             }
 
             return render(

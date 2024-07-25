@@ -5,6 +5,7 @@
 <p>Upload Result</p>
 
 <p>Filename: {{ filename }}</p>
+<p>Plate Predict: {{ plate_predict }}</p>
 <p>Manual Plate Number: {{ manual_plate_number }}</p>
 <p>Status Vehicle: {{status_vehicle}}</p>
 <p>Customer: {{customer}}</p>
@@ -12,6 +13,8 @@
 <p>End parking: {{end_parking}}</p>
 <p>Parking Duration: {{parking_duration}}</p>
 <p>Status parking: {{status}}</p>
+
+<img src="data:image/jpeg;base64, {{ filename }}"/>
 
 <a href="{% url 'parking_service:main' %}">Back</a>
 
