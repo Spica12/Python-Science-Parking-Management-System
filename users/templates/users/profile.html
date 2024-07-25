@@ -2,10 +2,27 @@
 
 {% block content %}
     <h1>Profile</h1>
-    <p>Email: {{ user.email }}</p>
-    <p>Nickname: {{ user.nickname }}</p>
-    <p>Date Joined: {{ user.date_joined }}</p>
-    
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <p>Email: {{ user.email }}</p>
+            <p>Nickname: {{ user.nickname }}</p>
+            <p>Date Joined: {{ user.date_joined }}</p>
+        </div>
+        <!-- Display Role, must be removed on release -->
+        <div style="text-align: right;">
+            <p>Role: 
+                {% if user.userrole.is_admin %}
+                    <span style="color: blue;">Admin</span>
+                {% elif user.userrole.is_operator %}
+                    <span style="color: orange;">Operator</span>
+                {% else %}
+                    <span style="color: gray;">Customer</span>
+                {% endif %}
+            </p>
+        </div>
+        <!-- Display Role, must be removed on release -->
+    </div>
+
     <p>Verified: 
         {% if user.userrole.is_verified %}
             <span style="color: green;">✔ Verified</span>
