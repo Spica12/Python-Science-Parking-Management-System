@@ -23,7 +23,10 @@ def get_vehicles(request):
 
     return render(request, "vehicles/vehicles.html", context=context)
 
-@admin_or_operator_required
+# @admin_or_operator_required
+# Треба змінити назву функції, тому-що через те що дві однакових
+# не працює сторінка транспортних засобів користувача
+# 
 def get_vehicles(request):
     vehicles = Vehicle.objects.filter()
 
