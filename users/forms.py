@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, PasswordResetForm
-from django.contrib.auth.views import PasswordResetView
+from django.core.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.urls import reverse_lazy
@@ -63,6 +63,19 @@ class ManageProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['email', 'nickname']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        email_lower = email.lower()
+        if CustomUser.objects.filter(email__iexact=email_lower).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('This email is already in use.')
+        return email
+
+    def clean_nickname(self):
+        nickname = self.cleaned_data.get('nickname')
+        if CustomUser.objects.filter(nickname__iexact=nickname).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('This nickname is already in use.')
+        return nickname
 
     def save(self, commit=True):
         user = super().save(commit=False)
