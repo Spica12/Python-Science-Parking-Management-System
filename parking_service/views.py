@@ -10,7 +10,6 @@ from parking_service.forms import UploadFileForm
 
 # Create your views here.
 def main_page(request):
-
     filename = ''
     manual_plate_number = ''
     plate_number = ''
