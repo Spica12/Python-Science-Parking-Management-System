@@ -3,37 +3,24 @@
 {% block content %}
 
 <h1>List Tariffs</h1>
-<a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
 
+{% if user.userrole.is_admin or user.userrole.is_operator %}
+    <a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
+{% endif %}
 
 <table>
     <thead>
-        <th scope>ID</th>
-        <th scope>Description</th>
-        <th scope>Start Date</th>
-        <th scope>Price</th>
-        <th scope>End Date</th>
-        {% if user.userrole.is_admin or user.userrole.is_operator %}
-            <th scope>Delete Tariff</th>
-        {% endif %}
+        <tr>
+            <th scope>ID</th>
+            <th scope>Description</th>
+            <th scope>Start Date</th>
+            <th scope>Price</th>
+            <th scope>End Date</th>
+            {% if user.userrole.is_admin or user.userrole.is_operator %}
+                <th scope>Delete Tariff</th>
+            {% endif %}
+        </tr>
     </thead>
-    <div class="pagination">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
     {% if page_obj %}
     <tbody>
         {% for tariff in page_obj %}
@@ -52,5 +39,22 @@
     {% endif %}
 </table>
 
+<div class="pagination" style="text-align: center; margin-top: 20px;">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}
