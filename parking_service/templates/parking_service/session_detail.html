@@ -1,0 +1,52 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<h1>Detail Session # {{ session.pk }}</h1>
+
+<a href="{% url 'vehicles:detail_vehicle' pk=session.vehicle.pk %}">Back</a>
+
+
+<table>
+    <thead>
+        <th scope>Info</th>
+        <th scope>Value</th>
+    </thead>
+    <tbody>
+        </tr>
+            <th colspan="2"><b>Session</b></th>
+        <tr>
+        <tr>
+            <td>Status:</td>
+            <td>{{ session.status }}</td>
+        </tr>
+        <tr>
+            <td>Start parking:</td>
+            <td>{{ session.started_at }}</td>
+        </tr>
+        <tr>
+            <td>End parking:</td>
+            <td>{{ session.end_at }}</td>
+        </tr>
+        <tr>
+            <td>Parking Duration:</td>
+            <td>{{ session.formatted_duration }}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Vehicle</b></th>
+        <tr>
+        <tr>
+            <td>Plate Number:</td>
+            <td>{{ session.vehicle.plate_number }}</td>
+        </tr>
+        <tr>
+            <td>Status Vehicle:</td>
+            <td>{{ session.vehicle.status }}</td>
+        </tr>
+        <tr>
+            <td>Customer:</td>
+            <td>{{ session.vehicle.user.nickname }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

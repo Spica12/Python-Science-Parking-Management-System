@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.utils import timezone
 from finance.models import Payment
 from parking_service.models import ParkingSession, StatusParkingEnum
@@ -65,7 +66,7 @@ def main_page(request):
                 "filename": filename,
                 'manual_plate_number': manual_plate_number,
                 'status_vehicle': session.vehicle.status,
-                # 'customer': session.vehicle.user.nickname,
+                'customer': session.vehicle.user.nickname,
                 'status': session.status,
                 'start_parking': session.started_at,
                 'end_parking': session.end_at,
@@ -86,3 +87,17 @@ def main_page(request):
         "parking_service/index.html",
         {"form": form}
     )
+
+
+def get_detail_parking_session(request, pk):
+    # payment = get_object_or_404(Payment, pk=pk)
+    try:
+        parking_session = ParkingSession.objects.get(pk=pk)
+        print(parking_session)
+    except ParkingSession.DoesNotExist:
+        return render(request, "vehicles/vehicles.html", context=context)
+
+    context = {
+        'session': parking_session,
+    }
+    return render(request, "parking_service/session_detail.html", context=context)
