@@ -9,10 +9,13 @@ from aiogram.types import (
 menu = InlineKeyboardMarkup(
     inline_keyboard=[
         [
+            InlineKeyboardButton(text="🚗 Перегляд машин", callback_data="vehicles")
+        ],
+        [
             InlineKeyboardButton(text="📲 Паркувальні сповіщення", callback_data="parking_messages")
         ],
         [
-            InlineKeyboardButton(text="📒 Звіт про розрахунки", callback_data="parking_report")
+            InlineKeyboardButton(text="📒 Звіт про розрахунки", callback_data="report")
         ]
     ]
 )
