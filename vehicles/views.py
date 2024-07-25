@@ -30,7 +30,6 @@ def get_vehicles(request):
 
     return render(request, "vehicles/vehicles.html", context=context)
 
-
 # @user_is_verified (Replace login_required)
 @login_required(login_url="login")
 def add_vehicle(request):

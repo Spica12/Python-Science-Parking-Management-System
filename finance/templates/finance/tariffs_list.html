@@ -3,8 +3,10 @@
 {% block content %}
 
 <h1>List Tariffs</h1>
-<a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
 
+{% if user.userrole.is_admin or user.userrole.is_operator %}
+    <a href="{% url 'finance:tariff_add' %}" role="button">Add Tariff</a>
+{% endif %}
 
 <table>
     <thead>
@@ -51,6 +53,5 @@
     </tbody>
     {% endif %}
 </table>
-
 
 {% endblock %}
