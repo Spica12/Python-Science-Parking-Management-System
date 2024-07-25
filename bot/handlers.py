@@ -17,19 +17,29 @@ from . import keyboards
 from . import text
 
 email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+user_id_store = {}
 
 def setup(router: Router, bot):
     @router.message(Command("start"))
     async def start_handler(message: types.Message):
+        user_id = message.from_user.id
+        user_id_store[user_id] = user_id
         await message.answer(text.enter_email)
         
     @router.message(lambda message: re.match(email_regex, message.text))
     async def handle_license_plate(message: types.Message):
         email = message.text.strip()
-        user = await sync_to_async(CustomUser.objects.get)(email=email)
-        user.telegram_id = message.from_user.id
-        await sync_to_async(user.save)()
-        await message.answer(text.greet, reply_markup=keyboards.menu)
+        user_id = message.from_user.id
+        if user_id in user_id_store and user_id_store[user_id] == user_id:
+            try:
+                user = await sync_to_async(CustomUser.objects.get)(email=email)
+                user.telegram_id = message.from_user.id
+                await sync_to_async(user.save)()
+                await message.answer(text.greet, reply_markup=keyboards.menu)
+            except CustomUser.DoesNotExist:
+                await message.answer(text.error_message_1)
+        else:
+            await message.answer(text.error_message_2)
 
     @router.callback_query(F.data == "menu")
     async def menu(clbck: CallbackQuery):
