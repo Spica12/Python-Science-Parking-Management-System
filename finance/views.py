@@ -1,9 +1,12 @@
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 from finance.forms import TariffForm
 from finance.models import Tariff
 from django.contrib.auth.decorators import login_required
+from adminapp.decorators import admin_required, admin_or_operator_required
+
 
 # Create your views here.
 @login_required(login_url="login")
@@ -16,9 +19,8 @@ def get_payments_list_by_user(request):
         "finance/payments_list.html",
     )
 
-@login_required(login_url="login")
+@admin_or_operator_required
 def add_tariff(request):
-    # TODO Додати перевірку чи адмін, якщо ні, то перевести на головну сторінку
 
     last_tariff = Tariff.objects.last()
 
@@ -27,10 +29,10 @@ def add_tariff(request):
         if form.is_valid():
             new_tariff = form.save(commit=False)
             if last_tariff:
-                last_tariff.end_date =new_tariff.start_date - timezone.timedelta(seconds=1)
+                last_tariff.end_date = new_tariff.start_date - timezone.timedelta(days=1)
                 last_tariff.save()
             new_tariff.save()
-            return redirect("finance:payments_list_by_user")
+            return redirect("finance:tariffs_list")
     else:
         form = TariffForm()
 
@@ -39,11 +41,15 @@ def add_tariff(request):
 @login_required(login_url="login")
 def get_tariffs_list(request):
 
-    tariffs = Tariff.objects.all()
+    tariffs = Tariff.objects.all().order_by('-start_date')
 
-    return render(request, "finance/tariffs_list.html", {"tariffs": tariffs})
+    paginator = Paginator(tariffs, 10)  # Показувати 10 рядків на сторінці
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-@login_required(login_url="login")
+    return render(request, "finance/tariffs_list.html", {"page_obj": page_obj})
+
+@admin_or_operator_required
 def delete_tariff(request, pk):
 
     try:

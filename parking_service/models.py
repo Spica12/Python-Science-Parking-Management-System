@@ -34,7 +34,7 @@ class ParkingSession(models.Model):
 
     def save(self, *args, **kwargs):
         if self.end_at and self.started_at:
-            self.duration = self.end_at - self.started_at
+            self.parking_duration = self.end_at - self.started_at
         super().save(*args, **kwargs)
 
     def formatted_duration(self):
