@@ -1,0 +1,16 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<p>Upload Photo or Plate Number</p>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+{% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+{% endif %}
+
+{% endblock %}
