@@ -17,6 +17,7 @@
 <table>
     <thead>
         <tr>
+            <th>ID</th>
             <th>Email</th>
             <th>Nickname</th>
             <th>Role</th>
@@ -28,6 +29,7 @@
     <tbody>
         {% for user in users %}
         <tr>
+            <td>{{ user.id }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.nickname }}</td>
             <td>
@@ -48,15 +50,16 @@
             <td>{{ user.userrole.is_active|yesno:"Active,Blocked" }}</td>
             <td>
                 {% if not user.userrole.is_admin %}
-                    <form method="post" action="{% url 'adminapp:change_user_status' user.id %}" onsubmit="return confirmAction(this);">
+                    <form method="post" action="{% url 'adminapp:change_user_status' user.id %}">
                         {% csrf_token %}
-                        <select name="action" onchange="this.form.submit()">
+                        <select name="action">
                             <option value="">Select action</option>
                             <option value="verify" {% if user.userrole.is_verified %}disabled{% endif %}>Verify</option>
                             <option value="unverify" {% if not user.userrole.is_verified %}disabled{% endif %}>Unverify</option>
                             <option value="block" {% if not user.userrole.is_active %}disabled{% endif %}>Block</option>
                             <option value="unblock" {% if user.userrole.is_active %}disabled{% endif %}>Unblock</option>
                         </select>
+                        <button type="submit" style="display: none;"></button>
                     </form>
                 {% endif %}
             </td>
@@ -66,26 +69,34 @@
 </table>
 
 <script>
-    function confirmAction(form) {
-        const action = form.querySelector('select[name="action"]').value;
-        if (!action) return false;
+    document.querySelectorAll('select[name="action"]').forEach(select => {
+        select.addEventListener('change', function (event) {
+            const form = this.closest('form');
+            const action = this.value;
+            let message = '';
 
-        let message = '';
-        switch (action) {
-            case 'verify':
-                message = 'Are you sure you want to verify this user?';
-                break;
-            case 'unverify':
-                message = 'Are you sure you want to unverify this user?';
-                break;
-            case 'block':
-                message = 'Are you sure you want to block this user?';
-                break;
-            case 'unblock':
-                message = 'Are you sure you want to unblock this user?';
-                break;
-        }
-        return confirm(message);
-    }
+            switch (action) {
+                case 'verify':
+                    message = 'Are you sure you want to verify this user?';
+                    break;
+                case 'unverify':
+                    message = 'Are you sure you want to unverify this user?';
+                    break;
+                case 'block':
+                    message = 'Are you sure you want to block this user?';
+                    break;
+                case 'unblock':
+                    message = 'Are you sure you want to unblock this user?';
+                    break;
+            }
+
+            if (message && confirm(message)) {
+                form.submit();
+            } else {
+                // Reset the select to prevent accidental submission without confirmation
+                this.value = '';
+            }
+        });
+    });
 </script>
 {% endblock %}
