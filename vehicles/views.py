@@ -10,7 +10,7 @@ from vehicles.utils import get_total_parking_duration
 from users.decorators import user_is_verified
 
 # @user_is_verified (Replace login_required)
-@login_required(login_url="login")
+@user_is_verified
 def get_vehicles(request):
     
     # TODO Зробити більш правильну перевірку на адміна або оператора

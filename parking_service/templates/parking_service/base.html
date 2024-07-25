@@ -16,6 +16,7 @@
             <ul style="display: flex; align-items: center;">
                 <li><a href="{% url 'parking_service:main' %}" role="button">Main Page</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'plate_recognition:upload' %}" role="button">Upload</a></li>
                     {% if user.userrole.is_admin or user.userrole.is_operator %}
                         <li><a href="{% url 'adminapp:admin_panel' %}" role="button">Admin Panel</a></li>
                         <li><a href="{% url 'vehicles:vehicles' %}" role="button">Vehicles</a></li>
