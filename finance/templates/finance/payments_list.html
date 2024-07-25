@@ -4,5 +4,50 @@
 
 <h1>Payments List</h1>
 
+<table>
+    <thead>
+        <th scope>ID</th>
+        <th scope>Created at</th>
+        <th scope>Parking Session ID</th>
+        <th scope>Vehicle Number</th>
+        <th scope>Amount</th>
+        {% if user.userrole.is_admin or user.userrole.is_operator %}
+            <th scope>Delete</th>
+        {% endif %}
+    </thead>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% if page_obj %}
+    <tbody>
+        {% for payment in page_obj %}
+            <tr>
+                <td>{{ payment.pk }}</td>
+                <td>{{ payment.created_at }}</td>
+                <td>{{ payment.parking_session_pk.pk }}</td>
+                <td>{{ payment.parking_session_pk.vehicle.plate_number }}</td>
+                <td>{{ payment.amount }}</td>
+                {% if user.userrole.is_admin or user.userrole.is_operator %}
+                    <td><a href="{% url 'finance:payment_delete' pk=payment.pk %}">Delete</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    {% endif %}
+</table>
 
 {% endblock %}

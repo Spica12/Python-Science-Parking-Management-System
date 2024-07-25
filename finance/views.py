@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 
 from finance.forms import TariffForm
-from finance.models import Tariff
+from finance.models import Tariff, Payment
 from django.contrib.auth.decorators import login_required
 from adminapp.decorators import admin_required, admin_or_operator_required
 
@@ -12,12 +12,29 @@ from adminapp.decorators import admin_required, admin_or_operator_required
 @login_required(login_url="login")
 def get_payments_list_by_user(request):
 
+    payments = Payment.objects.all()
 
+    paginator = Paginator(payments, 10)  # Показувати 10 рядків на сторінці
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    return render(
-        request,
-        "finance/payments_list.html",
-    )
+    context = {
+        'page_obj': page_obj
+    }
+
+    return render(request, "finance/payments_list.html", context=context)
+
+@admin_or_operator_required
+def delete_payment(request, pk):
+
+    try:
+        payment = Payment.objects.get(pk=pk)
+        payment.delete()
+    except Tariff.DoesNotExist:
+        payment = None
+
+    return redirect("finance:payments_list_by_user")
+
 
 @admin_or_operator_required
 def add_tariff(request):

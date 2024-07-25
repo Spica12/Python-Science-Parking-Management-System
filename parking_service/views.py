@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from finance.models import Payment
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from parking_service.forms import UploadFileForm
@@ -41,16 +42,17 @@ def main_page(request):
                     }
                     return render(request, 'main_page.html', context)
             except Vehicle.DoesNotExist:
-                vehicle = Vehicle(plate_number=plate_number)
+                vehicle = Vehicle(plate_number=plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
                 vehicle.save()
-                print('Create new vehicle')
 
             try:
                 session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
                 session.status = StatusParkingEnum.FINISHED.name
                 session.end_at = timezone.now()
-                # session.parking_duration = session.end_at - session.started_at
+                payment = Payment(parking_session_pk=session, amount=0)
                 session.save()
+                payment.save()
+
             except ParkingSession.DoesNotExist:
                 session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
                 session.save()

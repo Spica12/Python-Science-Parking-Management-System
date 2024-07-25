@@ -7,12 +7,12 @@ CURRENCY = 'UAH'
 
 # Create your models here.
 class Payment(models.Model):
-    parking_session_id = models.ForeignKey(ParkingSession, on_delete=models.SET_NULL, null=True, blank=True)
+    parking_session_pk = models.ForeignKey(ParkingSession, on_delete=models.SET_NULL, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Payment {self.id} on {self.datetime} for {self.parking_session_id} by {self.amount}"
+        return f"Payment {self.pk} on {self.datetime} for {self.parking_session_pk} by {self.amount}"
 
 
 class Tariff(models.Model):

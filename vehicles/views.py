@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from adminapp.decorators import admin_or_operator_required
 from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession, StatusParkingEnum
@@ -11,6 +12,20 @@ from users.decorators import user_is_verified
 @login_required(login_url="login")
 def get_vehicles(request):
     vehicles = Vehicle.objects.filter(user=request.user)
+
+    paginator = Paginator(vehicles, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj
+    }
+
+    return render(request, "vehicles/vehicles.html", context=context)
+
+@admin_or_operator_required
+def get_vehicles(request):
+    vehicles = Vehicle.objects.filter()
 
     paginator = Paginator(vehicles, 10)
     page_number = request.GET.get('page')
