@@ -5,15 +5,41 @@
 
     <form method="post" action="{% url 'users:manage_profile' %}">
         {% csrf_token %}
+        
+        <!-- Display form errors -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
         <fieldset>
             <legend>Profile Information</legend>
             <p>
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                <input type="email" id="email" name="email" value="{{ form.email.value|default:user.email }}" required>
+                {% if form.email.errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </p>
             <p>
                 <label for="nickname">Nickname:</label>
-                <input type="text" id="nickname" name="nickname" value="{{ user.nickname }}" required>
+                <input type="text" id="nickname" name="nickname" value="{{ form.nickname.value|default:user.nickname }}" required>
+                {% if form.nickname.errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.nickname.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </p>
         </fieldset>
 
