@@ -13,15 +13,20 @@ git clone https://github.com/Spica12/Python-Science-Parking-Management-System.gi
 ```
 poetry config --local virtualenvs.in-project true
 
-C:\Users\user\AppData\Local\Programs\Python\Python312\python.exe -m venv .venv
+C:\Users\user\AppData\Local\Programs\Python\Python311\python.exe -m venv .venv
 
-poetry env use .venv\bin\Scripts\python.exe
+poetry env use .venv\Scripts\python.exe
 ```
 
 Запустити віртуальне середовище
 
 ```
 poetry shell
+```
+# Оновити бібліотеки для контейнерів
+```
+poetry lock --no-update
+poetry export --without-hashes --format=requirements.txt > requirements.txt
 ```
 
 # Запуск docker-compose

@@ -1,0 +1,36 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<h1>Confirm Plate Number</h1>
+<table>
+    <thead>
+        <th scope>Info</th>
+        <th scope>Value</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Plate Number Predict:</td>
+            <td>{{ predict_plate_number }}</td>
+        </tr>
+        <tr>
+            <td>Plate Number Image</td>
+            <td>
+                {% if num_img %}
+                    <img
+                        src="data:image/jpeg;base64, {{ num_img }}"
+                        alt="recognized license plate number: {{ predict_plate_number }}"
+                        title="recognized license plate number: {{ predict_plate_number }}"
+                    />
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Confirm</button>
+</form>
+{% endblock %}
