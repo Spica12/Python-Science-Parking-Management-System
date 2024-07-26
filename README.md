@@ -23,6 +23,11 @@ poetry env use .venv\Scripts\python.exe
 ```
 poetry shell
 ```
+# Оновити бібліотеки для контейнерів
+```
+poetry lock --no-update
+poetry export --without-hashes --format=requirements.txt > requirements.txt
+```
 
 # Запуск docker-compose
 
