@@ -301,7 +301,4 @@ class PlateRecognition:
         return base64.b64encode(binary_image_data).decode("utf-8")
 
 
-
-
-
 image_plate_recognition = PlateRecognition()

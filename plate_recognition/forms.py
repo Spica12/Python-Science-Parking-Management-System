@@ -12,3 +12,8 @@ class UploadFileForm(forms.Form):
             }
         )
     )
+
+class ConfirmPlateForm(forms.Form):
+    confirm_plate_number = forms.CharField(
+        min_length=3, max_length=10, required=False, widget=forms.TextInput()
+    )

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<p>Upload Result</p>
+<h1>Upload Result</h1>
 
 <table>
     <thead>
@@ -10,9 +10,6 @@
         <th scope>Value</th>
     </thead>
     <tbody>
-        </tr>
-            <th colspan="2"><b>Upload Form</b></th>
-        <tr>
         <tr>
             <td>Filename:</td>
             <td>{{ filename }}</td>
@@ -26,21 +23,17 @@
         <tr>
         <tr>
             <td>Plate Number Predict:</td>
-            <td>{{ predict.num_vehicle_str }}</td>
+            <td>{{ predict_plate_number }}</td>
         </tr>
         <tr>
             <td>Plate Number Image</td>
             <td>
                 <img
-                    src="data:image/jpeg;base64,{{ predict.num_img }}"
-                    alt="recognized license plate number: {{ predict.num_vehicle_str }}"
-                    title="recognized license plate number: {{ predict.num_vehicle_str }}"
+                    src="data:image/jpeg;base64, {{ img_num }}"
+                    alt="recognized license plate number: {{ predict_plate_number }}"
+                    title="recognized license plate number: {{ predict_plate_number }}"
                 />
             </td>
-        </tr>
-        <tr>
-            <td>Accuracy:</td>
-            <td>{{ predict.accuracy }}</td>
         </tr>
         </tr>
             <th colspan="2"><b>Vehicle</b></th>
@@ -77,9 +70,5 @@
         </tr>
     </tbody>
 </table>
-
-
-
-<a href="{% url 'parking_service:main' %}">Back</a>
 
 {% endblock %}
