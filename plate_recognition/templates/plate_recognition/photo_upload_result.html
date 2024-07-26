@@ -28,45 +28,52 @@
         <tr>
             <td>Plate Number Image</td>
             <td>
-                <img
-                    src="data:image/jpeg;base64, {{ img_num }}"
-                    alt="recognized license plate number: {{ predict_plate_number }}"
-                    title="recognized license plate number: {{ predict_plate_number }}"
-                />
+                {% if num_img %}
+                    <img
+                        src="data:image/jpeg;base64, {{ num_img }}"
+                        alt="recognized license plate number: {{ predict_plate_number }}"
+                        title="recognized license plate number: {{ predict_plate_number }}"
+                    />
+                {% endif %}
             </td>
         </tr>
         </tr>
             <th colspan="2"><b>Vehicle</b></th>
         <tr>
         <tr>
-            <td>Status Vehicle:</td>
+            <td>Plate Number:</td>
             <td>{{ session.vehicle.plate_number }}</td>
         </tr>
+        <tr>
+            <td>Status Vehicle:</td>
+            <td>{{ session.vehicle.status }}</td>
+        </tr>
+
         </tr>
             <th colspan="2"><b>Customer</b></th>
         <tr>
         <tr>
             <td>Customer:</td>
-            <td>{{customer}}</td>
+            <td>{% if session.vehicle.user %}{{ session.vehicle.user.nickname }} {% endif %}</td>
         </tr>
         </tr>
             <th colspan="2"><b>Parking Session</b></th>
         <tr>
         <tr>
             <td>Start parking:</td>
-            <td>{{start_parking}}</td>
+            <td>{{session.started_at}}</td>
         </tr>
         <tr>
             <td>End parking:</td>
-            <td>{{end_parking}}</td>
+            <td>{{session.end_at}}</td>
         </tr>
         <tr>
             <td>Parking Duration:</td>
-            <td>{{parking_duration}}</td>
+            <td>{{session.parking_duration}}</td>
         </tr>
         <tr>
             <td>Status parking:</td>
-            <td>{{status}}</td>
+            <td>{{session.status}}</td>
         </tr>
     </tbody>
 </table>
