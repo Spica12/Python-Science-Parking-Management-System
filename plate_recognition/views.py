@@ -62,7 +62,6 @@ def upload_photo(request):
 
 
 def confirm_plate_number(request):
-    print('confirm start')
     predicted_plate_number = request.session.get('predicted_plate_number', '')
     confirmed_plate_number = request.session.get('confirmed_plate_number', '')
     manual_plate_number = request.session.get('confirmed_plate_number', '')
@@ -70,10 +69,8 @@ def confirm_plate_number(request):
     filename = request.session.get('filename', '')
 
     if request.method == 'POST' and not confirmed_plate_number:
-        print('confirm post')
         form = ConfirmPlateForm(request.POST)
         if form.is_valid():
-            print('confirm form is valid')
             confirmed_plate_number = form.cleaned_data.get('confirm_plate_number')
             request.session.pop('filename', None)
             # request.session.pop('confirmed_plate_number', None)
@@ -91,9 +88,7 @@ def confirm_plate_number(request):
 
         return render(request, 'plate_recognition/confirm_plate_number.html', context=context)
 
-    print('c', confirmed_plate_number)
     if confirmed_plate_number:
-        print('confirmed_plate_number')
         # TODO Пошук номера авто у базі даних зареєстрованих транспортних засобів.
         # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
 
