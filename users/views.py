@@ -41,7 +41,14 @@ def register(request):
             user = form.save(commit=False)
             user.is_active = True
             user.save()
-            UserRole.objects.create(user=user, role='Customer', is_verified=False)
+
+            is_first_user = CustomUser.objects.count() == 1
+
+            if is_first_user:
+                UserRole.objects.create(user=user, is_admin=True, is_verified=True)
+            else:
+                UserRole.objects.create(user=user)
+
             return redirect('users:login')
     else:
         form = CustomUserCreationForm()
