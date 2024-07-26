@@ -26,10 +26,13 @@ def setup(router: Router, bot):
     @router.message(lambda message: re.match(email_regex, message.text))
     async def handle_license_plate(message: types.Message):
         email = message.text.strip()
-        user = await sync_to_async(CustomUser.objects.get)(email=email)
-        user.telegram_id = message.from_user.id
-        await sync_to_async(user.save)()
-        await message.answer(text.greet, reply_markup=keyboards.menu)
+        try:
+            user = await sync_to_async(CustomUser.objects.get)(email=email)
+            user.telegram_id = message.from_user.id
+            await sync_to_async(user.save)()
+            await message.answer(text.greet, reply_markup=keyboards.menu)
+        except CustomUser.DoesNotExist:
+            await message.answer(text.error_message_1)
 
     @router.callback_query(F.data == "menu")
     async def menu(clbck: CallbackQuery):
@@ -54,11 +57,18 @@ def setup(router: Router, bot):
     @router.callback_query(lambda car: car.data and car.data.startswith('vehicles_'))
     async def process_callback_vehicle(clbck: CallbackQuery):
         vehicle_id = int(clbck.data.split('_')[1])
-        vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
-        records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
-        all_records = [f'Статус парковки: {record.status}\nТривалість паркування: {record.parking_duration}\nПочаток: {record.started_at}\nЗакінчення: {record.end_at}' for record in records]
-        all_records_text = "\n\n".join(all_records)
-        await clbck.message.answer(all_records_text, reply_markup=keyboards.exit_kb)
+        try:
+            vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
+            records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
+            if records:
+                all_records = [f'Статус парковки: {record.status}\nТривалість паркування: {record.parking_duration}\nПочаток: {record.started_at}\nЗакінчення: {record.end_at}' for record in records]
+                all_records_text = "\n\n".join(all_records)
+                await clbck.message.answer(all_records_text, reply_markup=keyboards.exit_kb)
+            else:
+                await clbck.message.answer(text.dont_have_sessions, reply_markup=keyboards.exit_kb)
+        except Vehicle.DoesNotExist:
+            await clbck.message.answer(text.dont_have_car, reply_markup=keyboards.exit_kb)
+            
     
     @router.callback_query(F.data == "parking_messages")
     async def input_parking_messages(clbck: CallbackQuery):
@@ -107,7 +117,7 @@ def setup(router: Router, bot):
             all_sessions_data.append(session_data)
         
         tmp_file_path = ''
-        with tempfile.NamedTemporaryFile(mode='w', newline='', delete=False, suffix='.csv') as tmp_file:
+        with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
             csv_writer = csv.writer(tmp_file)
             csv_writer.writerow(['Статус', 'Тривалість', 'Початок', 'Закінчення', 'Сума', 'Дата оплати'])
             
