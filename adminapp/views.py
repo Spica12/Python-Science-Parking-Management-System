@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from users.models import CustomUser, UserRole
-from vehicles.models import Vehicle
+from vehicles.models import Vehicle, StatusVehicleEnum
 from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
 
@@ -57,9 +57,9 @@ def change_vehicle_status(request, vehicle_id):
     action = request.POST.get('action')
 
     if action == 'block':
-        vehicle.status = 'BLOCKED'
+        vehicle.status = StatusVehicleEnum.BLOCKED.name
     elif action == 'unblock':
-        vehicle.status = 'ACTIVE'
+        vehicle.status = StatusVehicleEnum.ACTIVE.name
     elif action == 'delete':
         vehicle.delete()
         messages.success(request, f"Vehicle {vehicle.plate_number} has been deleted.")
