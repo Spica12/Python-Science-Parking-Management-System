@@ -7,6 +7,7 @@ from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm
 from plate_recognition.service_predict import image_plate_recognition
 
+
 # Create your views here.
 def upload_photo(request):
 
@@ -30,9 +31,7 @@ def upload_photo(request):
             # TODO Детекція номерного знаку
             # TODO Виявлення та виділення області з номерним знаком із зображень.
             # TODO Оптичне розпізнавання символів для ідентифікації тексту номерного знаку.
-
-            predict = image_plate_recognition.predict_plate(file=uploaded_image)
-            plate_predict = predict.get("num_vehicle_str")
+            img_predict = image_plate_recognition.predict_plate(file=uploaded_image)
 
             # TODO Пошук номера авто у базі даних зареєстрованих транспортних засобів.
             # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
@@ -67,7 +66,7 @@ def upload_photo(request):
             # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
             context = {
                 "filename": filename,
-                'plate_predict': plate_predict,
+                'predict': img_predict,
                 'manual_plate_number': manual_plate_number,
                 'status_vehicle': session.vehicle.status,
                 # 'customer': session.vehicle.user.nickname,

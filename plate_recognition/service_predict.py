@@ -1,6 +1,7 @@
 import io
 import cv2
 import os
+import base64
 from django.utils import timezone
 from pathlib import Path
 from keras import saving
@@ -65,7 +66,8 @@ class PlateRecognition:
 
         if is_success:
             io_buf = io.BytesIO(im_buf_arr)
-            num_result["num_img"] = io_buf.getvalue()
+            image = self.build_base64_image(io_buf.getvalue())
+            num_result["num_img"] = image
             im_buf_arr = np.zeros(0)
 
             # tune output accuracy
@@ -96,7 +98,6 @@ class PlateRecognition:
         plate_image = image.copy()
         roi = image.copy()
         plate = None
-        print(self.model_load_status)
         # Виявляє номерні знаки та повертає координати та розміри контурів виявлених номерних знаків.
         plate_rect = self.plate_cascade.detectMultiScale(plate_image, scaleFactor = 1.05, minNeighbors = 8)
 
@@ -295,6 +296,9 @@ class PlateRecognition:
         for i in range(3):
             new_img[:, :, i] = img
         return new_img
+
+    def build_base64_image(self, binary_image_data):
+        return base64.b64encode(binary_image_data).decode("utf-8")
 
 
 

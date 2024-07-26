@@ -4,17 +4,81 @@
 
 <p>Upload Result</p>
 
-<p>Filename: {{ filename }}</p>
-<p>Plate Predict: {{ plate_predict }}</p>
-<p>Manual Plate Number: {{ manual_plate_number }}</p>
-<p>Status Vehicle: {{status_vehicle}}</p>
-<p>Customer: {{customer}}</p>
-<p>Start parking: {{start_parking}}</p>
-<p>End parking: {{end_parking}}</p>
-<p>Parking Duration: {{parking_duration}}</p>
-<p>Status parking: {{status}}</p>
+<table>
+    <thead>
+        <th scope>Info</th>
+        <th scope>Value</th>
+    </thead>
+    <tbody>
+        </tr>
+            <th colspan="2"><b>Upload Form</b></th>
+        <tr>
+        <tr>
+            <td>Filename:</td>
+            <td>{{ filename }}</td>
+        </tr>
+        <tr>
+            <td>Manual Plate Number:</td>
+            <td>{{ manual_plate_number }}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Predict</b></th>
+        <tr>
+        <tr>
+            <td>Plate Number Predict:</td>
+            <td>{{ predict.num_vehicle_str }}</td>
+        </tr>
+        <tr>
+            <td>Plate Number Image</td>
+            <td>
+                <img
+                    src="data:image/jpeg;base64,{{ predict.num_img }}"
+                    alt="recognized license plate number: {{ predict.num_vehicle_str }}"
+                    title="recognized license plate number: {{ predict.num_vehicle_str }}"
+                />
+            </td>
+        </tr>
+        <tr>
+            <td>Accuracy:</td>
+            <td>{{ predict.accuracy }}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Vehicle</b></th>
+        <tr>
+        <tr>
+            <td>Status Vehicle:</td>
+            <td>{{ session.vehicle.plate_number }}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Customer</b></th>
+        <tr>
+        <tr>
+            <td>Customer:</td>
+            <td>{{customer}}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Parking Session</b></th>
+        <tr>
+        <tr>
+            <td>Start parking:</td>
+            <td>{{start_parking}}</td>
+        </tr>
+        <tr>
+            <td>End parking:</td>
+            <td>{{end_parking}}</td>
+        </tr>
+        <tr>
+            <td>Parking Duration:</td>
+            <td>{{parking_duration}}</td>
+        </tr>
+        <tr>
+            <td>Status parking:</td>
+            <td>{{status}}</td>
+        </tr>
+    </tbody>
+</table>
 
-<img src="data:image/jpeg;base64, {{ filename }}"/>
+
 
 <a href="{% url 'parking_service:main' %}">Back</a>
 
