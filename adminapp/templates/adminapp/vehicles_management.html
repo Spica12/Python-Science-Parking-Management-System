@@ -1,0 +1,95 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+<h1>Vehicles Management</h1>
+
+<form method="GET" action="{% url 'adminapp:vehicles_management' %}">
+    <div style="position: relative;">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search by user ID or plate number" style="padding-right: 120px;">
+        {% if query %}
+            <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa; text-decoration: none;">&times;</a>
+        {% endif %}
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Number</th>
+            <th>User ID</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vehicle in page_obj %}
+            <tr>
+                <td>{{ vehicle.pk }}</td>
+                <td>{{ vehicle.plate_number }}</td>
+                <td><a href="{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}">{{ vehicle.user.pk }}</a></td>
+                <td>{{ vehicle.status }}</td>
+                <td>
+                    <form method="post" action="{% url 'adminapp:change_vehicle_status' vehicle.pk %}">
+                        {% csrf_token %}
+                        <select name="action">
+                            <option value="">Select action</option>
+                            <option value="block" {% if vehicle.status == "BLOCKED" %}disabled{% endif %}>Block</option>
+                            <option value="unblock" {% if vehicle.status == "ACTIVE" %}disabled{% endif %}>Unblock</option>
+                            <option value="delete">Delete</option>
+                        </select>
+                        <button type="submit" style="display: none;"></button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if query %}&query={{ query }}{% endif %}">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<script>
+    document.querySelectorAll('select[name="action"]').forEach(select => {
+        select.addEventListener('change', function (event) {
+            const form = this.closest('form');
+            const action = this.value;
+            let message = '';
+
+            switch (action) {
+                case 'block':
+                    message = 'Are you sure you want to block this vehicle?';
+                    break;
+                case 'unblock':
+                    message = 'Are you sure you want to unblock this vehicle?';
+                    break;
+                case 'delete':
+                    message = 'Are you sure you want to delete this vehicle?';
+                    break;
+            }
+
+            if (message && confirm(message)) {
+                form.submit();
+            } else {
+                this.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}
