@@ -1,7 +1,11 @@
+import csv
+import tempfile
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from adminapp.decorators import admin_or_operator_required
+from finance.models import Payment
 from users.models import UserRole
 from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
@@ -83,3 +87,42 @@ def detail_vehicle(request, pk):
         'total_parking_duration': total_parking_duration,
     }
     return render(request, "vehicles/detail_vehicle.html", context=context)
+
+@login_required(login_url="login")
+def generate_report(request, pk):
+    vehicle = get_object_or_404(Vehicle, pk=pk)
+    records = ParkingSession.objects.filter(vehicle=vehicle)
+    
+    all_sessions_data = []
+    for record in records:
+        payments = Payment.objects.filter(parking_session_pk_id=record.id)
+        session_data = {
+            'status': record.status,
+            'parking_duration': record.parking_duration,
+            'started_at': record.started_at,
+            'end_at': record.end_at,
+            'payments': [(payment.amount, payment.created_at) for payment in payments]
+        }
+        all_sessions_data.append(session_data)
+    
+    tmp_file_path = ''
+    with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
+        csv_writer = csv.writer(tmp_file)
+        csv_writer.writerow(['Статус', 'Тривалість', 'Початок', 'Закінчення', 'Сума', 'Дата оплати'])
+        
+        for session in all_sessions_data:
+            for payment in session['payments']:
+                csv_writer.writerow([
+                    session['status'],
+                    session['parking_duration'],
+                    session['started_at'],
+                    session['end_at'],
+                    payment[0],
+                    payment[1]
+                ])
+        
+        tmp_file_path = tmp_file.name
+
+    response = HttpResponse(open(tmp_file_path, 'rb').read(), content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="vehicle_{vehicle.plate_number}_report.csv"'
+    return response
