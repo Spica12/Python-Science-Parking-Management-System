@@ -34,7 +34,10 @@ BOT_TOKEN = env("BOT_TOKEN")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '192.168.0.30'
+]
 
 
 # Application definition
