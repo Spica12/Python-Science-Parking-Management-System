@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
 
-sleep(5)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -32,10 +32,16 @@ sleep(5)
 SECRET_KEY = env("SECRET_KEY")
 BOT_TOKEN = env("BOT_TOKEN")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
+
+if not DEBUG:
+    print('Debug False')
+    sleep(5)
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     '192.168.0.30'
 ]
 
