@@ -45,7 +45,7 @@ class ParkingSession(models.Model):
     parking_spot = models.ForeignKey(ParkingSpot, on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.status == StatusParkingEnum.UNDEFINED.name and self.parking_spot is None:
+        if self.status == StatusParkingEnum.ACTIVE.name and self.parking_spot is None:
             available_spots = ParkingSpot.objects.filter(vehicle__isnull=True)
             if available_spots.exists():
                 self.parking_spot = choice(available_spots)
