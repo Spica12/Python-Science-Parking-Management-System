@@ -1,6 +1,6 @@
-from enum import Enum, auto
+from enum import Enum
 from django.db import models
-from users.models import CustomUser
+
 from vehicles.models import Vehicle
 
 # Create your models here.
@@ -58,6 +58,9 @@ class ParkingSession(models.Model):
 
             return ", ".join(result)
         return ""
+
+
+
 
 # from enum import Enum, auto
 
