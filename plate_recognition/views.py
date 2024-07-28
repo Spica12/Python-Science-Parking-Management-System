@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from finance.models import Payment
+from finance.models import Account, Payment
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm, ConfirmPlateForm
@@ -15,6 +15,11 @@ def upload_photo(request):
     manual_plate_number = ''
     plate_number = ''
 
+    request.session['predicted_plate_number'] = ''
+    request.session['confirmed_plate_number'] = ''
+    request.session['num_img'] = ''
+    request.session['filename'] = ''
+
     if request.method == "POST":
         # Приймання зображень від користувача
         form = UploadFileForm(request.POST, request.FILES)
@@ -23,11 +28,6 @@ def upload_photo(request):
             # manual_plate_number = request.POST.get("manual_plate_number")
             uploaded_image = form.cleaned_data.get('image')
             manual_plate_number = form.cleaned_data.get('manual_plate_number')
-
-            request.session['predicted_plate_number'] = ''
-            request.session['confirmed_plate_number'] = ''
-            request.session['num_img'] = ''
-            request.session['filename'] = ''
 
             # TODO Зробити логіку вибору між ручним номером та номером з фото. Поки що вибір ручного вводу номера
             if not uploaded_image and not manual_plate_number:
@@ -98,19 +98,26 @@ def confirm_plate_number(request):
             vehicle = Vehicle.objects.get(plate_number=confirmed_plate_number)
             if vehicle.status == StatusVehicleEnum.BLOCKED.name:
                 context = {
-                    'form': UploadFileForm(initial={'manual_plate_number': confirmed_plate_number}),
-                    'error_message': 'This vehicle is blocked.'
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. This vehicle is blocked.'
                 }
                 return render(request, "plate_recognition/photo_upload.html", context=context)
 
         except Vehicle.DoesNotExist:
             context = {
-                    'form': UploadFileForm(initial={'manual_plate_number': confirmed_plate_number}),
-                    'error_message': 'This vehicle is not registered.',
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. This vehicle is not registered.',
                 }
             return render(request, "plate_recognition/photo_upload.html", context=context)
-            # vehicle = Vehicle(plate_number=confirmed_plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
-            # vehicle.save()
+
+        user = vehicle.user
+        account = Account.objects.get(user=user)
+        if account.check_balance_limit():
+            context = {
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. User account balance is insufficient.',
+                }
+            return render(request, "plate_recognition/photo_upload.html", context=context)
 
         try:
             session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)

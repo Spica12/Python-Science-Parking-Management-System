@@ -4,9 +4,11 @@ import math
 from django.db import models
 from parking_service.models import ParkingSession
 from users.models import CustomUser
+from django.db import transaction, IntegrityError
 
 
 CURRENCY = 'UAH'
+BALANCE_LIMIT = -100
 
 # Create your models here.
 class Payment(models.Model):
@@ -39,7 +41,20 @@ class Payment(models.Model):
             # print('Invalid parking session or duration.')
             self.amount = 0
 
+        if session:
+            try:
+                with transaction.atomic():
+                    user = session.vehicle.user
+                    account = Account.objects.get(user=user)
+                    account.withdraw(self.amount)
+                    account.save()
+            except IntegrityError:
+                # Handle the case where the withdrawal fails, perhaps log an error or alert the user
+                raise ValueError("Failed to withdraw the amount from the user's account.")
+
         super().save(*args, **kwargs)
+
+
 
     def formatted_pk(self):
         return f"P-{str(self.pk).zfill(5)}"
@@ -72,3 +87,18 @@ class Account(models.Model):
         """
         self.balance += amount
         self.save()
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            raise ValueError("Withdrawal amount must be positive.")
+        # if amount > self.balance:
+        #     raise ValueError("Insufficient funds.")
+        try:
+            with transaction.atomic():
+                self.balance -= amount
+                self.save()
+        except IntegrityError:
+            raise ValueError("An error occurred while processing the withdrawal.")
+
+    def check_balance_limit(self):
+        self.balance <= BALANCE_LIMIT
