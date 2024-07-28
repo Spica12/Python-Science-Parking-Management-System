@@ -3,6 +3,7 @@ from decimal import Decimal
 import math
 from django.db import models
 from parking_service.models import ParkingSession
+from users.models import CustomUser
 
 
 CURRENCY = 'UAH'
@@ -57,3 +58,17 @@ class Tariff(models.Model):
 
     def __str__(self):
         return f'Tariff: {self.price_per_hour} {CURRENCY} per hour'
+
+class Account(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def view_balance(self):
+        return f'{self.balance} {CURRENCY}'
+
+    def deposit(self, amount):
+        """
+        Поповнює рахунок на вказану суму.
+        """
+        self.balance += amount
+        self.save()

@@ -10,4 +10,6 @@ urlpatterns = [
     path("tariffs/add", views.add_tariff, name="tariff_add"),
     path("tariffs/list/", views.get_tariffs_list, name="tariffs_list"),
     path("tariffs/<int:pk>/delete/", views.delete_tariff, name="tariff_delete"),
+    path("account/my/", views.get_my_account, name="account_my"),
+    path("account/my/deposit", views.deposit_view, name="account_my_deposit"),
 ]

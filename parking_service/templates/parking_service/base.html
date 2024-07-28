@@ -22,6 +22,7 @@
                     {% else %}
                         <li><a href="{% url 'vehicles:vehicles' %}" role="button">My Vehicles</a></li>
                         <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">My Payments</a></li>
+                        <li><a href="{% url 'finance:account_my' %}" role="button">My Account</a></li>
                     {% endif %}
                 {% endif %}
             </ul>

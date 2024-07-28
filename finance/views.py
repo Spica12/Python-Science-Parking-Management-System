@@ -2,8 +2,8 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.core.paginator import Paginator
 
-from finance.forms import TariffForm
-from finance.models import Tariff, Payment
+from finance.forms import DepositForm, TariffForm
+from finance.models import Account, Tariff, Payment
 from django.contrib.auth.decorators import login_required
 from adminapp.decorators import admin_required, admin_or_operator_required
 
@@ -78,3 +78,28 @@ def delete_tariff(request, pk):
         tariff.delete()
 
     return redirect("finance:tariffs_list")
+
+@login_required(login_url="login")
+def get_my_account(request):
+    user = request.user
+    account = Account.objects.get(user=user)
+
+    context = {
+        'account': account,
+    }
+    return render(request, "finance/account_my.html", context=context)
+
+@login_required(login_url="login")
+def deposit_view(request):
+    if request.method == 'POST':
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            account = Account.objects.get(user=request.user)
+            account.deposit(amount)
+            # messages.success(request, f'Ваш рахунок було поповнено на {amount} {CURRENCY}.')
+            return redirect('finance:account_my')  # Замініть 'some_view' на ваш URL
+    else:
+        form = DepositForm()
+
+    return render(request, 'finance/account_deposit.html', {'form': form})
