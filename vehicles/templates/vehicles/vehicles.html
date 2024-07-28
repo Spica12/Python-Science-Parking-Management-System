@@ -10,6 +10,7 @@
         <th scope>Number</th>
         <th scope>Status</th>
         <th scope>Delete Vehicle</th>
+        <th scope>Reports</th>
     </thead>
     <div class="pagination">
         <span class="step-links">
@@ -38,6 +39,11 @@
                 <td>
                     <a href="{% url 'vehicles:del_vehicle' pk=vehicle.pk %}" class="btn btn-primary">
                         <span class="glyphicon glyphicon-trash">Del</span>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'vehicles:generate_report' pk=vehicle.pk %}" class="btn btn-secondary">
+                        <span class="glyphicon glyphicon-file">Report</span>
                     </a>
                 </td>
             </tr>
