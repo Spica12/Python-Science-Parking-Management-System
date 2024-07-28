@@ -12,6 +12,7 @@ from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.utils import get_total_parking_duration
 from users.decorators import user_is_verified, user_is_admin_or_operator
+from users.models import CustomUser
 
 # @user_is_verified (Replace login_required)
 @user_is_verified
@@ -37,11 +38,14 @@ def get_vehicles(request):
 # @user_is_verified (Replace login_required)
 @admin_or_operator_required
 def add_vehicle(request):
+    users = CustomUser.objects.all()
     if request.method == "POST":
+        user_id = request.POST.get('user')
+        print(user_id)
         form = VehicleForm(request.POST)
         if form.is_valid():
             vehicle = form.save(commit=False)
-            vehicle.user = request.user
+            vehicle.user = CustomUser.objects.filter(pk=user_id).first()
             vehicle.save()
             if (user_is_admin_or_operator(request.user)):
                 return redirect('adminapp:vehicles_management')
@@ -50,7 +54,12 @@ def add_vehicle(request):
     else:
         form = VehicleForm()
 
-    return render(request, "vehicles/new_vehicle.html", {"form": form})
+    context = {
+        "form": form,
+        'users': users,
+    }
+
+    return render(request, "vehicles/new_vehicle.html", context=context)
 
 # @user_is_verified (Replace login_required)
 @login_required(login_url="login")
