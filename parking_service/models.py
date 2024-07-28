@@ -26,7 +26,7 @@ STATUS_PARKING_CHOICES = [(status.name, status.name) for status in StatusParking
 
 
 class ParkingSession(models.Model):
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, default=1)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(choices=STATUS_PARKING_CHOICES, default=StatusParkingEnum.UNDEFINED.name)
     started_at = models.DateTimeField(auto_now_add=True)
     end_at = models.DateTimeField(blank=True, null=True)

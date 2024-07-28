@@ -16,7 +16,6 @@
             <ul style="display: flex; align-items: center;">
                 <li><a href="{% url 'parking_service:main' %}" role="button">Main Page</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'plate_recognition:upload' %}" role="button">Upload</a></li>
                     {% if user.userrole.is_admin or user.userrole.is_operator %}
                         <li><a href="{% url 'plate_recognition:upload' %}" role="button">Upload</a></li>
                         <li><a href="{% url 'finance:payments_list_by_user' %}" role="button">Payments</a></li>

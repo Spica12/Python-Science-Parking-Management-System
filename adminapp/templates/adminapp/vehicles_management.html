@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Vehicles Management</h1>
-
+<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
 <form method="GET" action="{% url 'adminapp:vehicles_management' %}">
     <div style="position: relative;">
         <input type="text" name="query" value="{{ query }}" placeholder="Search by user ID or plate number" style="padding-right: 120px;">

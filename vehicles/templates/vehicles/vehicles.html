@@ -3,13 +3,11 @@
 {% block content %}
 
 <h1>My Vehicles</h1>
-<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
 <table>
     <thead>
         <th scope>ID</th>
         <th scope>Number</th>
         <th scope>Status</th>
-        <th scope>Delete Vehicle</th>
         <th scope>Reports</th>
     </thead>
     <div class="pagination">
@@ -36,11 +34,6 @@
                 <td>{{ vehicle.pk }}</td>
                 <td><a href="{% url 'vehicles:detail_vehicle' pk=vehicle.pk %}">{{ vehicle.plate_number }}</a></td>
                 <td>{{ vehicle.status }}</td>
-                <td>
-                    <a href="{% url 'vehicles:del_vehicle' pk=vehicle.pk %}" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-trash">Del</span>
-                    </a>
-                </td>
                 <td>
                     <a href="{% url 'vehicles:generate_report' pk=vehicle.pk %}" class="btn btn-secondary">
                         <span class="glyphicon glyphicon-file">Report</span>
