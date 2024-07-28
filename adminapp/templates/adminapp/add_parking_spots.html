@@ -1,0 +1,12 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<p>Add new parking spots</p>
+<form method="POST" class="record-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
+
+{% endblock %}  

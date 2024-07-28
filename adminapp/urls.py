@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import admin_panel, block_user, unblock_user, change_role, user_management, change_user_status, vehicles_management, change_vehicle_status, user_management_operator
+from .views import admin_panel, block_user, unblock_user, change_role, user_management, change_user_status, vehicles_management, change_vehicle_status, user_management_operator, add_parking_spots, parking_spots_list
 
 app_name = 'adminapp'
 
@@ -13,4 +13,6 @@ urlpatterns = [
     path('user_management_operator', user_management_operator, name='user_management_operator'),
     path('vehicles_management/', vehicles_management, name='vehicles_management'),
     path('vehicles/<int:vehicle_id>/change_status/', change_vehicle_status, name='change_vehicle_status'),
+    path('add_parking_spots/', add_parking_spots, name='add_parking_spots'),
+    path('parking_spots/', parking_spots_list, name='parking_spots_list'),
 ]

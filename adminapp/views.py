@@ -7,6 +7,8 @@ from users.models import CustomUser, UserRole
 from vehicles.models import Vehicle, StatusVehicleEnum
 from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
+from adminapp.forms import AddParkingSpotsForm
+from parking_service.models import ParkingSpot
 
 @user_is_active
 @admin_or_operator_required
@@ -157,3 +159,26 @@ def change_user_status(request, user_id):
         user_role.save()
     
     return redirect('adminapp:user_management')
+
+@admin_required
+def add_parking_spots(request):
+    if request.method == 'POST':
+        form = AddParkingSpotsForm(request.POST)
+        if form.is_valid():
+            number_of_spots = form.cleaned_data['number_of_spots']
+            existing_spots = ParkingSpot.objects.count()
+            spots_to_create = min(number_of_spots, 9999 - existing_spots)
+            
+            for i in range(spots_to_create):
+                ParkingSpot.objects.create()
+            
+            return redirect('adminapp:parking_spots_list')  # Adjust this redirect as necessary
+    else:
+        form = AddParkingSpotsForm()
+    
+    return render(request, 'adminapp/add_parking_spots.html', {'form': form})
+
+@admin_required
+def parking_spots_list(request):
+    spots = ParkingSpot.objects.all()
+    return render(request, 'adminapp/parking_spots_list.html', {'spots': spots})

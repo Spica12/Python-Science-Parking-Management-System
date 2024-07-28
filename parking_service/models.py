@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from django.db import models
+from random import choice
 from users.models import CustomUser
 from vehicles.models import Vehicle
 
@@ -25,17 +26,39 @@ class StatusParkingEnum(Enum):
 STATUS_PARKING_CHOICES = [(status.name, status.name) for status in StatusParkingEnum]
 
 
+class ParkingSpot(models.Model):
+    id = models.AutoField(primary_key=True)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.id)
+    class Meta:
+        ordering = ['id'] 
+    
 class ParkingSession(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
-    vehicle_plate_number = models.CharField(max_length=10, unique=True, blank=True)
-    status = models.CharField(choices=STATUS_PARKING_CHOICES, default=StatusParkingEnum.UNDEFINED.name)
+    vehicle_plate_number = models.CharField(max_length=10, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_PARKING_CHOICES, default=StatusParkingEnum.UNDEFINED.name)
     started_at = models.DateTimeField(auto_now_add=True)
     end_at = models.DateTimeField(blank=True, null=True)
     parking_duration = models.DurationField(blank=True, null=True)
+    parking_spot = models.ForeignKey(ParkingSpot, on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.status == StatusParkingEnum.UNDEFINED.name and self.parking_spot is None:
+            available_spots = ParkingSpot.objects.filter(vehicle__isnull=True)
+            if available_spots.exists():
+                self.parking_spot = choice(available_spots)
+                self.parking_spot.vehicle = self.vehicle
+                self.parking_spot.save()
+
         if self.end_at and self.started_at:
             self.parking_duration = self.end_at - self.started_at
+
+        if self.status == StatusParkingEnum.FINISHED.name and self.parking_spot:
+            self.parking_spot.vehicle = None
+            self.parking_spot.save()
+
         super().save(*args, **kwargs)
 
     def formatted_duration(self):
@@ -58,7 +81,6 @@ class ParkingSession(models.Model):
 
             return ", ".join(result)
         return ""
-
 # from enum import Enum, auto
 
 # from django.urls import reverse
