@@ -1,16 +1,26 @@
 {% extends "parking_service/base.html" %}
 
 {% block content %}
-<h1>Vehicles Management</h1>
-<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
-<form method="GET" action="{% url 'adminapp:vehicles_management' %}">
+<h1 style="display: flex; align-items: center;">
+    Vehicles Management
+    <a href="{% url 'vehicles:new_vehicle' %}" role="button" style="margin-left: 20px;">Add new Vehicle</a>
+</h1>
+<form method="GET" action="{% url 'adminapp:vehicles_management' %}" style="display: flex; align-items: center; gap: 10px;">
     <div style="position: relative;">
-        <input type="text" name="query" value="{{ query }}" placeholder="Search by user ID or plate number" style="padding-right: 120px;">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search by user ID or plate number" style="width: 1040px; padding-right: 30px;">
         {% if query %}
-            <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #aaa; text-decoration: none;">&times;</a>
+            <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 15px; top: 30px; transform: translateY(-50%); color: #aaa; text-decoration: none; font-size: 35px;">&times;</a>
         {% endif %}
     </div>
-    <button type="submit">Search</button>
+    <div>
+        <select name="status_filter" id="status_filter" style="width: 250px;">
+            <option value="" {% if not status_filter %}selected{% endif %}>All vehicles</option>
+            <option value="ACTIVE" {% if status_filter == "ACTIVE" %}selected{% endif %}>ACTIVE</option>
+            <option value="BLOCKED" {% if status_filter == "BLOCKED" %}selected{% endif %}>BLOCKED</option>
+            <option value="UNREGISTERED" {% if status_filter == "UNREGISTERED" %}selected{% endif %}>UNREGISTERED</option>
+        </select>
+    </div>
+    <button type="submit" style="width: 120px;">Search</button>
 </form>
 
 <table>
@@ -50,8 +60,8 @@
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1{% if query %}&query={{ query }}{% endif %}">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}">previous</a>
+            <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -59,8 +69,8 @@
         </span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}">last &raquo;</a>
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}">last &raquo;</a>
         {% endif %}
     </span>
 </div>

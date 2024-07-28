@@ -33,22 +33,28 @@ def user_management(request):
 def vehicles_management(request):
     user_id = request.GET.get('user_id')
     query = request.GET.get('query', '')
+    status_filter = request.GET.get('status_filter', '')
 
     if user_id:
         vehicles = Vehicle.objects.filter(user_id=user_id)
     else:
+        vehicles = Vehicle.objects.all()
         if query:
-            vehicles = Vehicle.objects.filter(
+            vehicles = vehicles.filter(
                 Q(user__id__icontains=query) | Q(plate_number__icontains=query)
             )
-        else:
-            vehicles = Vehicle.objects.all()
+        if status_filter:
+            vehicles = vehicles.filter(status=status_filter)
 
     paginator = Paginator(vehicles, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, 'adminapp/vehicles_management.html', {'page_obj': page_obj, 'query': query})
+    return render(request, 'adminapp/vehicles_management.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter
+    })
 
 @require_POST
 @admin_required
