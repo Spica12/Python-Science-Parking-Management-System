@@ -30,6 +30,22 @@ def user_management(request):
     return render(request, 'adminapp/user_management.html', {'users': users, 'query': query, 'user_id': user_id})
 
 @admin_or_operator_required
+def user_management_operator(request):
+    user_id = request.GET.get('user_id')
+    query = request.GET.get('query', '')
+
+    if user_id:
+        users = CustomUser.objects.filter(id=user_id)
+    elif query:
+        users = CustomUser.objects.filter(
+            Q(email__icontains=query) | Q(nickname__icontains=query) | Q(id__icontains=query)
+        )
+    else:
+        users = CustomUser.objects.all()
+
+    return render(request, 'adminapp/user_management_operator.html', {'users': users, 'query': query, 'user_id': user_id})
+
+@admin_or_operator_required
 def vehicles_management(request):
     user_id = request.GET.get('user_id')
     query = request.GET.get('query', '')
@@ -53,11 +69,13 @@ def vehicles_management(request):
     return render(request, 'adminapp/vehicles_management.html', {
         'page_obj': page_obj,
         'query': query,
-        'status_filter': status_filter
+        'status_filter': status_filter,
+        'user_is_admin': request.user.userrole.is_admin
     })
 
+
 @require_POST
-@admin_required
+@admin_or_operator_required
 def change_vehicle_status(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
     action = request.POST.get('action')

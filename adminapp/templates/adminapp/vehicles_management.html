@@ -38,7 +38,11 @@
             <tr>
                 <td>{{ vehicle.pk }}</td>
                 <td><a href="{% url 'vehicles:detail_vehicle' pk=vehicle.pk %}">{{ vehicle.plate_number }}</a></td>
-                <td><a href="{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}">{{ vehicle.user.nickname }}</a></td>
+                <td>
+                    <a href="{% if user_is_admin %}{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}{% else %}{% url 'adminapp:user_management_operator' %}?user_id={{ vehicle.user.pk }}{% endif %}">
+                        {{ vehicle.user.nickname }}
+                    </a>
+                </td>
                 <td>{{ vehicle.status }}</td>
                 <td>
                     <form method="post" action="{% url 'adminapp:change_vehicle_status' vehicle.pk %}">

@@ -3,14 +3,14 @@
 {% block content %}
 <h1>User Management</h1>
 
-<form method="get" action="{% url 'adminapp:user_management' %}" style="margin-bottom: 20px;">
+<form method="get" action="{% url 'adminapp:user_management' %}" style="display: flex; align-items: center; gap: 10px;">
     <div style="position: relative;">
-        <input type="text" name="query" value="{{ query }}" placeholder="Search by email, nickname, or ID" style="padding-right: 120px;">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search by email, nickname, or ID" style="width: 1250px; padding-right: 30px;">
         {% if query %}
         <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 15px; top: 30px; transform: translateY(-50%); color: #aaa; text-decoration: none; font-size: 35px;">&times;</a>
         {% endif %}
     </div>
-    <button type="submit">Search</button>   
+    <button type="submit" style="width: 120px;">Search</button>
 </form>
 
 <table>
