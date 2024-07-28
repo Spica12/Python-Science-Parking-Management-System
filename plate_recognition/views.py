@@ -114,6 +114,7 @@ def confirm_plate_number(request):
 
         except ParkingSession.DoesNotExist:
             session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
+            session.vehicle_plate_number = vehicle.plate_number
             session.save()
 
     # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час

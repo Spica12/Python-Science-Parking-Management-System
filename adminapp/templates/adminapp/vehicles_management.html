@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Vehicles Management</h1>
-
+<a href="{% url 'vehicles:new_vehicle' %}" role="button">Add new Vehicle</a>
 <form method="GET" action="{% url 'adminapp:vehicles_management' %}">
     <div style="position: relative;">
         <input type="text" name="query" value="{{ query }}" placeholder="Search by user ID or plate number" style="padding-right: 120px;">
@@ -18,7 +18,7 @@
         <tr>
             <th>ID</th>
             <th>Number</th>
-            <th>User ID</th>
+            <th>User</th>
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -27,8 +27,8 @@
         {% for vehicle in page_obj %}
             <tr>
                 <td>{{ vehicle.pk }}</td>
-                <td>{{ vehicle.plate_number }}</td>
-                <td><a href="{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}">{{ vehicle.user.pk }}</a></td>
+                <td><a href="{% url 'vehicles:detail_vehicle' pk=vehicle.pk %}">{{ vehicle.plate_number }}</a></td>
+                <td><a href="{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}">{{ vehicle.user.nickname }}</a></td>
                 <td>{{ vehicle.status }}</td>
                 <td>
                     <form method="post" action="{% url 'adminapp:change_vehicle_status' vehicle.pk %}">

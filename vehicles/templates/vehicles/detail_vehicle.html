@@ -4,7 +4,11 @@
 
 <h1>Detail Vehicle: {{ vehicle.plate_number }}</h1>
 
-<a href="{% url 'vehicles:vehicles' %}">Back</a>
+{% if user.userrole.is_admin or user.userrole.is_operator %}
+    <a href="{% url 'adminapp:vehicles_management' %}">Back</a>
+{% else %}
+    <a href="{% url 'vehicles:vehicles' %}">Back</a>
+{% endif %}
 
 <p>Status: {{ vehicle.status }}</p>
 <p>Total parking duration: {{ total_parking_duration }}</p>

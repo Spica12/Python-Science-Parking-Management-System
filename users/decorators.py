@@ -10,6 +10,10 @@ def is_verified(user):
     user_role = get_object_or_404(UserRole, user=user)
     return user_role.is_verified
 
+def user_is_admin_or_operator(user):
+    user_role = get_object_or_404(UserRole, user=user)
+    return user_role.is_admin or user_role.is_operator
+
 def user_is_active(view_func):
     @login_required
     def _wrapped_view(request, *args, **kwargs):

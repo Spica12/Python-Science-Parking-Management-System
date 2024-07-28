@@ -11,12 +11,13 @@ from vehicles.models import Vehicle
 from vehicles.forms import VehicleForm
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.utils import get_total_parking_duration
-from users.decorators import user_is_verified
+from users.decorators import user_is_verified, user_is_admin_or_operator
+from users.models import CustomUser
 
 # @user_is_verified (Replace login_required)
 @user_is_verified
 def get_vehicles(request):
-    
+
     # TODO Зробити більш правильну перевірку на адміна або оператора
     user_role = get_object_or_404(UserRole, user=request.user)
     if user_role.is_admin or user_role.role == 'Operator':
@@ -35,19 +36,30 @@ def get_vehicles(request):
     return render(request, "vehicles/vehicles.html", context=context)
 
 # @user_is_verified (Replace login_required)
-@login_required(login_url="login")
+@admin_or_operator_required
 def add_vehicle(request):
+    users = CustomUser.objects.all()
     if request.method == "POST":
+        user_id = request.POST.get('user')
+        print(user_id)
         form = VehicleForm(request.POST)
         if form.is_valid():
             vehicle = form.save(commit=False)
-            vehicle.user = request.user
+            vehicle.user = CustomUser.objects.filter(pk=user_id).first()
             vehicle.save()
+            if (user_is_admin_or_operator(request.user)):
+                return redirect('adminapp:vehicles_management')
+
             return redirect("vehicles:vehicles")
     else:
         form = VehicleForm()
 
-    return render(request, "vehicles/new_vehicle.html", {"form": form})
+    context = {
+        "form": form,
+        'users': users,
+    }
+
+    return render(request, "vehicles/new_vehicle.html", context=context)
 
 # @user_is_verified (Replace login_required)
 @login_required(login_url="login")
@@ -92,7 +104,7 @@ def detail_vehicle(request, pk):
 def generate_report(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     records = ParkingSession.objects.filter(vehicle=vehicle)
-    
+
     all_sessions_data = []
     for record in records:
         payments = Payment.objects.filter(parking_session_pk_id=record.id)
@@ -104,12 +116,12 @@ def generate_report(request, pk):
             'payments': [(payment.amount, payment.created_at) for payment in payments]
         }
         all_sessions_data.append(session_data)
-    
+
     tmp_file_path = ''
     with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
         csv_writer = csv.writer(tmp_file)
         csv_writer.writerow(['Статус', 'Тривалість', 'Початок', 'Закінчення', 'Сума', 'Дата оплати'])
-        
+
         for session in all_sessions_data:
             for payment in session['payments']:
                 csv_writer.writerow([
@@ -120,7 +132,7 @@ def generate_report(request, pk):
                     payment[0],
                     payment[1]
                 ])
-        
+
         tmp_file_path = tmp_file.name
 
     response = HttpResponse(open(tmp_file_path, 'rb').read(), content_type='text/csv')

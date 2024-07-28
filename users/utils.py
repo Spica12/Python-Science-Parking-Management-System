@@ -31,7 +31,7 @@ def send_activation_email(user, request):
     except Exception as e:
         print(f"Error sending email: {e}")
         return False
-    
+
 def send_password_reset_email(user_email, reset_link):
     subject = 'Password Reset Request'
     from_email = settings.DEFAULT_FROM_EMAIL
@@ -43,9 +43,10 @@ def send_password_reset_email(user_email, reset_link):
         'domain': '127.0.0.1:8000',
         'current_year': 2024
     })
-    
+
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
     email.attach_alternative(html_content, "text/html")
     email.send()
+

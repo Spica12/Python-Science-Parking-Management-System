@@ -6,6 +6,17 @@
 <form method="POST" class="record-form">
     {% csrf_token %}
     {{ form.as_p }}
+    <label for="user">Choose user:</label>
+    <select id="user" name="user">
+        {% if users %}
+            {% for user in users %}
+                <option value="{{ user.pk }}">{{ user.nickname }}</option>
+            {% endfor %}
+        {% else %}
+            <option value="">No users available</option>
+        {% endif %}
+    </select>
     <button type="submit" class="save btn btn-default">Save</button>
 </form>
+
 {% endblock %}

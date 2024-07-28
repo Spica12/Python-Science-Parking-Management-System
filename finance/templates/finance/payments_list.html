@@ -39,7 +39,7 @@
                 <td>{{ payment.pk }}</td>
                 <td>{{ payment.created_at }}</td>
                 <td>{{ payment.parking_session_pk.pk }}</td>
-                <td>{{ payment.parking_session_pk.vehicle.plate_number }}</td>
+                <td>{{ payment.parking_session_pk.vehicle_plate_number }}</td>
                 <td>{{ payment.amount }}</td>
                 {% if user.userrole.is_admin or user.userrole.is_operator %}
                     <td><a href="{% url 'finance:payment_delete' pk=payment.pk %}">Delete</a></td>
