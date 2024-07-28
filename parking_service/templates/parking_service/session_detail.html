@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Detail Session # {{ session.pk }}</h1>
+<h1>Detail Session {{ session.formatted_pk }}</h1>
 
 <a href="{% url 'vehicles:detail_vehicle' pk=session.vehicle.pk %}">Back</a>
 
@@ -46,6 +46,25 @@
         <tr>
             <td>Customer:</td>
             <td>{{ session.vehicle.user.nickname }}</td>
+        </tr>
+        </tr>
+            <th colspan="2"><b>Payment</b></th>
+        <tr>
+        <tr>
+            <td>Payment ID:</td>
+            <td>{{ payment.formatted_pk }}</td>
+        </tr>
+        <tr>
+            <td>Tariff:</td>
+            <td>{{ payment.current_tariff }} UAH</td>
+        </tr>
+        <tr>
+            <td>Full hours:</td>
+            <td>{{ payment.full_hours }} </td>
+        </tr>
+        <tr>
+            <td>Amount:</td>
+            <td>{{ payment.amount }} UAH</td>
         </tr>
     </tbody>
 </table>

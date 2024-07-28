@@ -19,3 +19,6 @@ class Vehicle(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     # TODO Додати що засіб заблокований
+
+    def formatted_pk(self):
+        return f"{str(self.pk).zfill(3)}"

@@ -60,6 +60,10 @@ class ParkingSession(models.Model):
         return ""
 
 
+    def formatted_pk(self):
+        return f"S-{str(self.pk).zfill(5)}"
+
+
 
 
 # from enum import Enum, auto

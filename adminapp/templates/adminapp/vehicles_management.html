@@ -26,7 +26,7 @@
     <tbody>
         {% for vehicle in page_obj %}
             <tr>
-                <td>{{ vehicle.pk }}</td>
+                <td>{{ vehicle.formatted_pk }}</td>
                 <td><a href="{% url 'vehicles:detail_vehicle' pk=vehicle.pk %}">{{ vehicle.plate_number }}</a></td>
                 <td><a href="{% url 'adminapp:user_management' %}?user_id={{ vehicle.user.pk }}">{{ vehicle.user.nickname }}</a></td>
                 <td>{{ vehicle.status }}</td>
