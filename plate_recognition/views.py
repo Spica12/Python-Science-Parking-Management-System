@@ -26,6 +26,8 @@ def upload_photo(request):
 
             request.session['predicted_plate_number'] = ''
             request.session['confirmed_plate_number'] = ''
+            request.session['num_img'] = ''
+            request.session['filename'] = ''
 
             # TODO Зробити логіку вибору між ручним номером та номером з фото. Поки що вибір ручного вводу номера
             if not uploaded_image and not manual_plate_number:
@@ -96,26 +98,35 @@ def confirm_plate_number(request):
             vehicle = Vehicle.objects.get(plate_number=confirmed_plate_number)
             if vehicle.status == StatusVehicleEnum.BLOCKED.name:
                 context = {
-                    'form': form,
+                    'form': UploadFileForm(initial={'manual_plate_number': confirmed_plate_number}),
                     'error_message': 'This vehicle is blocked.'
                 }
-                return render(request, 'main_page.html', context)
+                return render(request, "plate_recognition/photo_upload.html", context=context)
+
         except Vehicle.DoesNotExist:
-            vehicle = Vehicle(plate_number=confirmed_plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
-            vehicle.save()
+            context = {
+                    'form': UploadFileForm(initial={'manual_plate_number': confirmed_plate_number}),
+                    'error_message': 'This vehicle is not registered.',
+                }
+            return render(request, "plate_recognition/photo_upload.html", context=context)
+            # vehicle = Vehicle(plate_number=confirmed_plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
+            # vehicle.save()
 
         try:
             session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
             session.status = StatusParkingEnum.FINISHED.name
-            session.end_at = timezone.now()
-            payment = Payment(parking_session_pk=session, amount=0)
-            session.save()
-            payment.save()
 
         except ParkingSession.DoesNotExist:
             session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
+            session.vehicle = vehicle
             session.vehicle_plate_number = vehicle.plate_number
             session.save()
+
+        if session.status == StatusParkingEnum.FINISHED.name:
+            session.end_at = timezone.now()
+            session.save()
+            payment = Payment(parking_session_pk=session)
+            payment.save()
 
     # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час
     # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
