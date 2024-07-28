@@ -10,10 +10,13 @@
         <a href="{% url 'finance:tariffs_list' %}" role="button">Parking tariffs</a>
         <a href="{% url 'finance:payments_list_by_user' %}" role="button">Payment Management</a>
         <a href="{% url 'adminapp:vehicles_management' %}" role="button">Vehicles Management</a>
+        <a href="{% url 'adminapp:add_parking_spots' %}" role="button">Add parking spots</a>
+        <a href="{% url 'adminapp:parking_spots_list' %}" role="button">Parking spots</a>
     </div>
 <!-- For Operators -->
 {% elif user.userrole.is_operator %}
     <div>
+        <a href="{% url 'adminapp:user_management_operator' %}" role="button">User Management</a>
         <a href="{% url 'finance:tariffs_list' %}" role="button">Parking tariffs</a>
         <a href="{% url 'finance:payments_list_by_user' %}" role="button">Payment Management</a>
         <a href="{% url 'adminapp:vehicles_management' %}" role="button">Vehicles Management</a>

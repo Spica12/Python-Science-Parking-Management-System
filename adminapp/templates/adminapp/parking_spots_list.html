@@ -1,0 +1,21 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+<h2>Parking Spots List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vehicle</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for spot in spots %}
+        <tr>
+            <td>{{ spot.id }}</td>
+            <td>{{ spot.vehicle }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

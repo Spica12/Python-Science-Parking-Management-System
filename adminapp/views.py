@@ -7,6 +7,8 @@ from users.models import CustomUser, UserRole
 from vehicles.models import Vehicle, StatusVehicleEnum
 from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
+from adminapp.forms import AddParkingSpotsForm
+from parking_service.models import ParkingSpot
 
 @user_is_active
 @admin_or_operator_required
@@ -30,28 +32,52 @@ def user_management(request):
     return render(request, 'adminapp/user_management.html', {'users': users, 'query': query, 'user_id': user_id})
 
 @admin_or_operator_required
-def vehicles_management(request):
+def user_management_operator(request):
     user_id = request.GET.get('user_id')
     query = request.GET.get('query', '')
 
     if user_id:
+        users = CustomUser.objects.filter(id=user_id)
+    elif query:
+        users = CustomUser.objects.filter(
+            Q(email__icontains=query) | Q(nickname__icontains=query) | Q(id__icontains=query)
+        )
+    else:
+        users = CustomUser.objects.all()
+
+    return render(request, 'adminapp/user_management_operator.html', {'users': users, 'query': query, 'user_id': user_id})
+
+@admin_or_operator_required
+def vehicles_management(request):
+    user_id = request.GET.get('user_id')
+    query = request.GET.get('query', '')
+    status_filter = request.GET.get('status_filter', '')
+
+    if user_id:
         vehicles = Vehicle.objects.filter(user_id=user_id)
     else:
+        vehicles = Vehicle.objects.all()
         if query:
-            vehicles = Vehicle.objects.filter(
+            vehicles = vehicles.filter(
                 Q(user__id__icontains=query) | Q(plate_number__icontains=query)
             )
-        else:
-            vehicles = Vehicle.objects.all()
+        if status_filter:
+            vehicles = vehicles.filter(status=status_filter)
 
     paginator = Paginator(vehicles, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, 'adminapp/vehicles_management.html', {'page_obj': page_obj, 'query': query})
+    return render(request, 'adminapp/vehicles_management.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'user_is_admin': request.user.userrole.is_admin
+    })
+
 
 @require_POST
-@admin_required
+@admin_or_operator_required
 def change_vehicle_status(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
     action = request.POST.get('action')
@@ -133,3 +159,26 @@ def change_user_status(request, user_id):
         user_role.save()
     
     return redirect('adminapp:user_management')
+
+@admin_required
+def add_parking_spots(request):
+    if request.method == 'POST':
+        form = AddParkingSpotsForm(request.POST)
+        if form.is_valid():
+            number_of_spots = form.cleaned_data['number_of_spots']
+            existing_spots = ParkingSpot.objects.count()
+            spots_to_create = min(number_of_spots, 9999 - existing_spots)
+            
+            for i in range(spots_to_create):
+                ParkingSpot.objects.create()
+            
+            return redirect('adminapp:parking_spots_list')  # Adjust this redirect as necessary
+    else:
+        form = AddParkingSpotsForm()
+    
+    return render(request, 'adminapp/add_parking_spots.html', {'form': form})
+
+@admin_required
+def parking_spots_list(request):
+    spots = ParkingSpot.objects.all()
+    return render(request, 'adminapp/parking_spots_list.html', {'spots': spots})
