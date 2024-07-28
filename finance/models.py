@@ -25,18 +25,17 @@ class Payment(models.Model):
             self.current_tariff = tariff.price_per_hour
 
             if self.current_tariff:
-                # Припустимо, у Tariff є поле `rate` або аналогічне
                 duration_in_hours = session.parking_duration.total_seconds() / 3600  # Перетворення тривалості в години
                 self.full_hours = Decimal(math.ceil(duration_in_hours))
                 self.amount = self.current_tariff * self.full_hours
                 print(f'AMOUNT: {self.amount}')
             else:
                 # Обробка випадку, коли тариф не знайдено
-                print('Tariff not found for the given session time.')
+                # print('Tariff not found for the given session time.')
                 self.amount = 0
         else:
             # Обробка випадку, коли session або її поля не визначені
-            print('Invalid parking session or duration.')
+            # print('Invalid parking session or duration.')
             self.amount = 0
 
         super().save(*args, **kwargs)
