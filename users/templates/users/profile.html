@@ -2,48 +2,66 @@
 
 {% block content %}
     <h1>Profile</h1>
+
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <p>Email: {{ user.email }}</p>
-            <p>Nickname: {{ user.nickname }}</p>
-            <p>Date Joined: {{ user.date_joined }}</p>
-        </div>
-        <!-- Display Role, must be removed on release -->
-        <div style="text-align: right;">
-            <p>Role: 
-                {% if user.userrole.is_admin %}
-                    <span style="color: blue;">Admin</span>
-                {% elif user.userrole.is_operator %}
-                    <span style="color: orange;">Operator</span>
-                {% else %}
-                    <span style="color: gray;">Customer</span>
-                {% endif %}
-            </p>
-        </div>
-        <!-- Display Role, must be removed on release -->
+        <table>
+            <thead>
+                <th scope>Info</th>
+                <th scope>Value</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Email</td>
+                    <td> {{ user.email }} </td>
+                </tr>
+                <tr>
+                    <td>Nickname</td>
+                    <td>{{ user.nickname }}</td>
+                </tr>
+                <tr>
+                    <td>Role</td>
+                    <td>
+                        {% if user.userrole.is_admin %}
+                            <span style="color: blue;">Admin</span>
+                        {% elif user.userrole.is_operator %}
+                            <span style="color: orange;">Operator</span>
+                        {% else %}
+                            <span style="color: gray;">Customer</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Date Joined:</td>
+                    <td>{{ user.date_joined }}</td>
+                </tr>
+                <tr>
+                    <td>Verified</td>
+                    <td>
+                        {% if user.userrole.is_verified %}
+                            <span style="color: green;">✔ Verified</span>
+                        {% else %}
+                            <span style="color: red;">❌ Not Verified</span>
+                            <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post" style="margin-top: 10px;">
+                                {% csrf_token %}
+                                <button type="submit" class="button">Verify User</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Telegram Linked</td>
+                    <td>
+                        {% if user.userrole.telegram_linked %}
+                            <span style="color: green;">✔ Linked</span>
+                        {% else %}
+                            <span style="color: red;">❌ Not Linked</span>
+                            <button type="button" class="button" disabled>Link Telegram</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-    <p>Verified: 
-        {% if user.userrole.is_verified %}
-            <span style="color: green;">✔ Verified</span>
-        {% else %}
-            <span style="color: red;">❌ Not Verified</span>
-            <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post" style="margin-top: 10px;">
-                {% csrf_token %}
-                <button type="submit" class="button">Verify User</button>
-            </form>
-        {% endif %}
-    </p>
-    
-    <p>Telegram Linked: 
-        {% if user.userrole.telegram_linked %}
-            <span style="color: green;">✔ Linked</span>
-        {% else %}
-            <span style="color: red;">❌ Not Linked</span>
-            <button type="button" class="button" disabled>Link Telegram</button>
-        {% endif %}
-    </p>
-
     <!-- Manage Profile Button -->
     <form action="{% url 'users:manage_profile' %}" method="get" style="margin-top: 20px;">
         <button type="submit" class="button">Manage Profile</button>
