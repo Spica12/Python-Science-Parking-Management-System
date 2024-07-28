@@ -6,6 +6,7 @@ from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm, ConfirmPlateForm
 from plate_recognition.service_predict import image_plate_recognition
+from parking_service.models import ParkingSpot
 
 
 # Create your views here.
@@ -92,6 +93,8 @@ def confirm_plate_number(request):
         # TODO Пошук номера авто у базі даних зареєстрованих транспортних засобів.
         # TODO Додати перевірку Якщо машина заблокована, то вивести інформацію, що засіб заблокований
 
+        form = None
+
         try:
             vehicle = Vehicle.objects.get(plate_number=confirmed_plate_number)
             if vehicle.status == StatusVehicleEnum.BLOCKED.name:
@@ -99,7 +102,7 @@ def confirm_plate_number(request):
                     'form': form,
                     'error_message': 'This vehicle is blocked.'
                 }
-                return render(request, 'main_page.html', context)
+                return render(request, 'parking_service/main_page.html', context)
         except Vehicle.DoesNotExist:
             vehicle = Vehicle(plate_number=confirmed_plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
             vehicle.save()
@@ -113,6 +116,14 @@ def confirm_plate_number(request):
             payment.save()
 
         except ParkingSession.DoesNotExist:
+            available_spots = ParkingSpot.objects.filter(vehicle__isnull=True)
+            if not available_spots.exists():
+                context = {
+                    'form': form,
+                    'error_message': 'No available parking spots.'
+                }
+                return render(request, 'parking_service/main_page.html', context)
+
             session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
             session.vehicle_plate_number = vehicle.plate_number
             session.save()
