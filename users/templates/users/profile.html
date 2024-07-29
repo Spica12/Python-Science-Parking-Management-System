@@ -49,15 +49,24 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Telegram Linked</td>
-                    <td>
-                        {% if user.userrole.telegram_linked %}
-                            <span style="color: green;">✔ Linked</span>
-                        {% else %}
-                            <span style="color: red;">❌ Not Linked</span>
-                            <button type="button" class="button" disabled>Link Telegram</button>
-                        {% endif %}
-                    </td>
+                    {% if user.is_tg_verified is not None%}
+                        <td>Telegram Verified</td>
+                        <td>
+                            {% if user.is_tg_verified %}
+                                <span style="color: green;">✔ Verified</span>
+                            {% elif user.is_tg_verified is False %}
+                                <span style="color: red;">❌ Not Verified</span>
+                                <form id="verificationForm" action="{% url 'users:verify_tg' user.id %}" method="post" style="margin-top: 10px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button">Verify Telegram</button>
+                                </form>
+                                <form id="verificationForm" action="{% url 'users:unverify_tg' user.id %}" method="post" style="margin-top: 10px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button">Cancel</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 </tr>
             </tbody>
         </table>

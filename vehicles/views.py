@@ -120,7 +120,7 @@ def generate_report(request, pk):
     tmp_file_path = ''
     with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
         csv_writer = csv.writer(tmp_file)
-        csv_writer.writerow(['Статус', 'Тривалість', 'Початок', 'Закінчення', 'Сума', 'Дата оплати'])
+        csv_writer.writerow(['Status', 'Parking duration', 'Started at', 'End at', 'Amount', 'Payment date'])
 
         for session in all_sessions_data:
             for payment in session['payments']:
