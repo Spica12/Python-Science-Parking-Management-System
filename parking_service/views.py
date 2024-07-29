@@ -1,20 +1,21 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-from finance.models import Payment
 from django.core.paginator import Paginator
+from django.utils import timezone
 from parking_service.models import ParkingSession, ParkingSpot, StatusParkingEnum
-from finance.models import Tariff
+from finance.models import Tariff, Payment
+
 
 
 
 def main_page(request):
     parking_spots = ParkingSpot.objects.all()
     paginator = Paginator(parking_spots, 24)
-
+    today = timezone.now().date()
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    tariffs = Tariff.objects.all()
+    tariffs = Tariff.objects.filter(start_date__lte=today, end_date__gte=today).order_by('-start_date')
 
     context = {
         'parking_spots': page_obj,
