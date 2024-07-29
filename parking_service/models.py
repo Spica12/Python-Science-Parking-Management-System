@@ -33,8 +33,8 @@ class ParkingSpot(models.Model):
     def __str__(self):
         return str(self.id)
     class Meta:
-        ordering = ['id'] 
-    
+        ordering = ['id']
+
 class ParkingSession(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
     vehicle_plate_number = models.CharField(max_length=10)
@@ -81,7 +81,7 @@ class ParkingSession(models.Model):
 
             return ", ".join(result)
         return ""
-    
+
     def formatted_pk(self):
         return f"S-{str(self.pk).zfill(5)}"
 
