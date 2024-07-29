@@ -68,7 +68,29 @@ def setup(router: Router, bot):
             vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
             records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
             if records:
-                all_records = [f'Статус парковки: {record.status}\nТривалість паркування: {record.parking_duration}\nПочаток: {record.started_at}\nЗакінчення: {record.end_at}' for record in records]
+                records = sorted(records, key=lambda x: x.started_at)
+                all_sessions_data = []
+                for record in records:
+                    try:
+                        payment = await sync_to_async(Payment.objects.get)(parking_session_pk_id=record.id)
+                        session_data = {
+                            'status': record.status,
+                            'parking_duration': record.parking_duration,
+                            'started_at': record.started_at,
+                            'end_at': record.end_at,
+                            'payment': payment.amount
+                        }
+                    except Payment.DoesNotExist:
+                        session_data = {
+                            'status': record.status,
+                            'parking_duration': record.parking_duration,
+                            'started_at': record.started_at,
+                            'end_at': record.end_at,
+                            'payment': 'No payment'
+                        }
+                    all_sessions_data.append(session_data)
+                        
+                all_records = [f"Статус парковки: {session['status']}\nТривалість паркування: {session['parking_duration']}\nПочаток: {session['started_at']}\nЗакінчення: {session['end_at']}\nЦіна: {session['payment']}" for session in all_sessions_data]
                 all_records_text = "\n\n".join(all_records)
                 await clbck.message.answer(all_records_text, reply_markup=keyboards.exit_kb)
             else:
@@ -127,33 +149,44 @@ def setup(router: Router, bot):
         vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
         records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
         if records:
+            records = sorted(records, key=lambda x: x.started_at)
             all_sessions_data = []
             for record in records:
-                payments = await sync_to_async(list)(Payment.objects.filter(parking_session_pk_id=record.id))
-                session_data = {
-                    'status': record.status,
-                    'parking_duration': record.parking_duration,
-                    'started_at': record.started_at,
-                    'end_at': record.end_at,
-                    'payments': [(payment.amount, payment.created_at) for payment in payments]
-                }
+                try:
+                    payment = await sync_to_async(Payment.objects.get)(parking_session_pk_id=record.id)
+                    session_data = {
+                        'id': record.id,
+                        'status': record.status,
+                        'parking_duration': record.parking_duration,
+                        'started_at': record.started_at,
+                        'end_at': record.end_at,
+                        'payments': [payment.amount, payment.created_at]
+                    }
+                except Payment.DoesNotExist:
+                    session_data = {
+                        'status': record.status,
+                        'parking_duration': record.parking_duration,
+                        'started_at': record.started_at,
+                        'end_at': record.end_at,
+                        'payment': ['No payment', 'No payment']
+                    }
                 all_sessions_data.append(session_data)
             
             tmp_file_path = ''
             with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
                 csv_writer = csv.writer(tmp_file)
-                csv_writer.writerow(['Status', 'Parking duration', 'Started at', 'End at', 'Amount', 'Payment date'])
+                csv_writer.writerow(['Parking Session', 'Status', 'Parking duration', 'Started at', 'End at', 'Amount', 'Payment date'])
                 
                 for session in all_sessions_data:
-                    for payment in session['payments']:
-                        csv_writer.writerow([
-                            session['status'],
-                            session['parking_duration'],
-                            session['started_at'],
-                            session['end_at'],
-                            payment[0],
-                            payment[1]
-                        ])
+                    csv_writer.writerow([
+                        session['id'],
+                        session['status'],
+                        session['parking_duration'],
+                        session['started_at'],
+                        session['end_at'],
+                        session['payments'][0],
+                        session['payments'][1]
+                    ])
                 
                 tmp_file_path = tmp_file.name
                 
@@ -162,20 +195,3 @@ def setup(router: Router, bot):
             await clbck.message.answer(text.csv_input, reply_markup=keyboards.exit_kb)
         else:
             await clbck.message.answer(text.dont_have_sessions, reply_markup=keyboards.exit_kb)
-        
-    
-    
-    
-    
-    # @router.callback_query(F.data == "registration_vehicle")
-    # async def input_registration_vehicle(clbck: CallbackQuery):
-    #     await clbck.message.answer(text.registration_vehicle, reply_markup=keyboards.exit_kb)
-    
-    # @router.message(lambda message: re.match(pattern, message.text.upper()))
-    # async def handle_license_plate(message: types.Message):
-    #     license_plate = message.text.strip().upper()
-    #     vehicle = await sync_to_async(Vehicle.objects.get)(plate_number=license_plate)
-    #     user = await sync_to_async(CustomUser.objects.get)(id=vehicle.user_id)
-    #     user.telegram_id = message.from_user.id
-    #     await sync_to_async(user.save)()
-    #     await message.answer(f'{user.email}, {text.ok_message}', reply_markup=keyboards.exit_kb)

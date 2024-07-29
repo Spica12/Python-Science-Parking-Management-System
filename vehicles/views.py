@@ -103,35 +103,45 @@ def detail_vehicle(request, pk):
 @login_required(login_url="login")
 def generate_report(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
-    records = ParkingSession.objects.filter(vehicle=vehicle)
+    records = ParkingSession.objects.filter(vehicle=vehicle).order_by('started_at')
 
     all_sessions_data = []
     for record in records:
-        payments = Payment.objects.filter(parking_session_pk_id=record.id)
-        session_data = {
-            'status': record.status,
-            'parking_duration': record.parking_duration,
-            'started_at': record.started_at,
-            'end_at': record.end_at,
-            'payments': [(payment.amount, payment.created_at) for payment in payments]
-        }
+        try:
+            payment = Payment.objects.get(parking_session_pk_id=record.id)
+            session_data = {
+                'id': record.id,
+                'status': record.status,
+                'parking_duration': record.parking_duration,
+                'started_at': record.started_at,
+                'end_at': record.end_at,
+                'payments': [payment.amount, payment.created_at]
+            }
+        except Payment.DoesNotExist:
+            session_data = {
+                'status': record.status,
+                'parking_duration': record.parking_duration,
+                'started_at': record.started_at,
+                'end_at': record.end_at,
+                'payment': ['No payment', 'No payment']
+            }
         all_sessions_data.append(session_data)
 
     tmp_file_path = ''
     with tempfile.NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False, suffix='.csv') as tmp_file:
         csv_writer = csv.writer(tmp_file)
-        csv_writer.writerow(['Status', 'Parking duration', 'Started at', 'End at', 'Amount', 'Payment date'])
-
+        csv_writer.writerow(['Parking Session', 'Status', 'Parking duration', 'Started at', 'End at', 'Amount', 'Payment date'])
+                
         for session in all_sessions_data:
-            for payment in session['payments']:
-                csv_writer.writerow([
-                    session['status'],
-                    session['parking_duration'],
-                    session['started_at'],
-                    session['end_at'],
-                    payment[0],
-                    payment[1]
-                ])
+            csv_writer.writerow([
+                session['id'],
+                session['status'],
+                session['parking_duration'],
+                session['started_at'],
+                session['end_at'],
+                session['payments'][0],
+                session['payments'][1]
+            ])
 
         tmp_file_path = tmp_file.name
 
