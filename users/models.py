@@ -21,7 +21,7 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=255)
     is_tg_verified = models.BooleanField(blank=True, null=True)
-    telegram_id = models.CharField(max_length=100, blank=True, null=True, default='', unique=True)
+    telegram_id = models.CharField(max_length=100, blank=True, null=True, unique=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'email'
