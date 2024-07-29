@@ -40,6 +40,9 @@ if not DEBUG:
     sleep(5)
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(",")
+CSRF_TRUSTED_ORIGINS = [
+    'https://accurate-josy-spica-40cb5916.koyeb.app/'б
+]
 
 
 # Application definition
