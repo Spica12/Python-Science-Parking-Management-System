@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from finance.models import Payment
+from finance.models import Account, Payment
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm, ConfirmPlateForm
@@ -16,6 +16,11 @@ def upload_photo(request):
     manual_plate_number = ''
     plate_number = ''
 
+    request.session['predicted_plate_number'] = ''
+    request.session['confirmed_plate_number'] = ''
+    request.session['num_img'] = ''
+    request.session['filename'] = ''
+
     if request.method == "POST":
         # Приймання зображень від користувача
         form = UploadFileForm(request.POST, request.FILES)
@@ -24,9 +29,6 @@ def upload_photo(request):
             # manual_plate_number = request.POST.get("manual_plate_number")
             uploaded_image = form.cleaned_data.get('image')
             manual_plate_number = form.cleaned_data.get('manual_plate_number')
-
-            request.session['predicted_plate_number'] = ''
-            request.session['confirmed_plate_number'] = ''
 
             # TODO Зробити логіку вибору між ручним номером та номером з фото. Поки що вибір ручного вводу номера
             if not uploaded_image and not manual_plate_number:
@@ -99,21 +101,30 @@ def confirm_plate_number(request):
             vehicle = Vehicle.objects.get(plate_number=confirmed_plate_number)
             if vehicle.status == StatusVehicleEnum.BLOCKED.name:
                 context = {
-                    'form': form,
-                    'error_message': 'This vehicle is blocked.'
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. This vehicle is blocked.'
                 }
-                return render(request, 'parking_service/main_page.html', context)
+                return render(request, "plate_recognition/photo_upload.html", context=context)
+
         except Vehicle.DoesNotExist:
-            vehicle = Vehicle(plate_number=confirmed_plate_number, status = StatusVehicleEnum.UNREGISTERED.name)
-            vehicle.save()
+            context = {
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. This vehicle is not registered.',
+                }
+            return render(request, "plate_recognition/photo_upload.html", context=context)
+
+        user = vehicle.user
+        account = Account.objects.get(user=user)
+        if account.check_balance_limit():
+            context = {
+                    # 'form': UploadFileForm(),
+                    'error_message': 'Entry is forbidden. User account balance is insufficient.',
+                }
+            return render(request, "plate_recognition/photo_upload.html", context=context)
 
         try:
             session = ParkingSession.objects.get(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
             session.status = StatusParkingEnum.FINISHED.name
-            session.end_at = timezone.now()
-            payment = Payment(parking_session_pk=session, amount=0)
-            session.save()
-            payment.save()
 
         except ParkingSession.DoesNotExist:
             available_spots = ParkingSpot.objects.filter(vehicle__isnull=True)
@@ -125,8 +136,15 @@ def confirm_plate_number(request):
                 return render(request, 'parking_service/main_page.html', context)
 
             session = ParkingSession(vehicle=vehicle, status=StatusParkingEnum.ACTIVE.name)
+            session.vehicle = vehicle
             session.vehicle_plate_number = vehicle.plate_number
             session.save()
+
+        if session.status == StatusParkingEnum.FINISHED.name:
+            session.end_at = timezone.now()
+            session.save()
+            payment = Payment(parking_session_pk=session)
+            payment.save()
 
     # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час
     # TODO Інформацію про стан паркування: Початок паркування, (Кінець паркування, Тривалість паркування, Вартість)
@@ -139,8 +157,4 @@ def confirm_plate_number(request):
         'session': session,
     }
 
-    return render(
-        request,
-        "plate_recognition/photo_upload_result.html",
-        context=context
-    )
+    return render(request, 'parking_service/main_page.html', context)

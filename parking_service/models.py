@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 from django.db import models
 from random import choice
 from users.models import CustomUser
@@ -37,7 +37,7 @@ class ParkingSpot(models.Model):
     
 class ParkingSession(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, null=True, blank=True)
-    vehicle_plate_number = models.CharField(max_length=10, blank=True)
+    vehicle_plate_number = models.CharField(max_length=10)
     status = models.CharField(max_length=20, choices=STATUS_PARKING_CHOICES, default=StatusParkingEnum.UNDEFINED.name)
     started_at = models.DateTimeField(auto_now_add=True)
     end_at = models.DateTimeField(blank=True, null=True)
@@ -81,6 +81,11 @@ class ParkingSession(models.Model):
 
             return ", ".join(result)
         return ""
+
+      def formatted_pk(self):
+        return f"S-{str(self.pk).zfill(5)}"
+
+
 # from enum import Enum, auto
 
 # from django.urls import reverse

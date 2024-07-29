@@ -4,13 +4,18 @@
 
 <h1>Upload Photo or Plate Number</h1>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-</form>
-{% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
+{% if form %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+{% else%}
+    {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+    <a href="{% url 'plate_recognition:upload' %}" role="button">Back</a>
 {% endif %}
+
 
 {% endblock %}

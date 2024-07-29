@@ -10,6 +10,8 @@ from django.utils.encoding import force_str
 from django.urls import reverse_lazy
 from django.db.models import Q
 
+from finance.models import Account
+
 
 from .forms import CustomPasswordResetForm, CustomUserCreationForm, LoginForm, ManageProfileForm, CustomPasswordChangeForm
 from .models import CustomUser, UserRole
@@ -41,6 +43,8 @@ def register(request):
             user = form.save(commit=False)
             user.is_active = True
             user.save()
+            account = Account(user=user)
+            account.save()
 
             is_first_user = CustomUser.objects.count() == 1
 
@@ -57,17 +61,17 @@ def register(request):
 @login_required
 def verification_email(request):
     user = request.user
-    
+
     if not user.email:
         messages.error(request, 'Email address not set.')
         return redirect('users:profile')
-    
+
     user_role = get_user_role(user)
-    
+
     if user_role.is_verified:
         messages.info(request, 'Your account is already verified.')
         return redirect('users:profile')
-    
+
     send_activation_email(user, request)
     messages.success(request, 'Verification email has been sent.')
     return redirect('users:email_sent')
@@ -97,10 +101,10 @@ def verify(request, uidb64, token):
 def profile(request):
     user = request.user
     user_role = get_user_role(user)
-    
+
     if not user_role.is_active:
         return HttpResponseForbidden("Your account is inactive. Please contact support.")
-    
+
     return render(request, 'users/profile.html', {'user': user, 'user_role': user_role})
 
 def login(request):

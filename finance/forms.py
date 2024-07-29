@@ -1,6 +1,8 @@
 from datetime import datetime
+from decimal import Decimal
 from django import forms
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from finance.models import Tariff
 
@@ -30,3 +32,19 @@ class TariffForm(forms.ModelForm):
         self.initial["start_date"] = min_date.strftime("%Y-%m-%d")
         self.fields["start_date"].widget.attrs["min"] = min_date.strftime("%Y-%m-%d")
         self.fields["start_date"].widget.attrs["title"] = f'Minimum : {min_date.strftime("%Y-%m-%d")}'
+
+class DepositForm(forms.Form):
+
+    amount = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=Decimal('0.01'),
+        label='Сума поповнення',
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Введіть суму'})
+    )
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            raise ValidationError("Сума поповнення повинна бути більше нуля.")
+        return amount

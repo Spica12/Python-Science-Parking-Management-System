@@ -1,0 +1,22 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+
+<h1>My Account</h1>
+
+<a href="{% url 'finance:account_my_deposit' %}" role="button">Deposit</a>
+
+<table>
+    <thead>
+        <th scope>Info</th>
+        <th scope>View</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Balance</td>
+            <td>{{ account.view_balance }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}
