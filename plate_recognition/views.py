@@ -143,7 +143,10 @@ def confirm_plate_number(request):
         if session.status == StatusParkingEnum.FINISHED.name:
             session.end_at = timezone.now()
             session.save()
-            payment = Payment(parking_session_pk=session, payment_type=TypePaymentEnum.DEBIT.name)
+            payment = Payment(
+                user=user,
+                parking_session_pk=session,
+                payment_type=TypePaymentEnum.DEBIT.name)
             payment.save()
 
     # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час

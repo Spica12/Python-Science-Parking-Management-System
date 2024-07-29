@@ -17,6 +17,12 @@ class TypePaymentEnum(Enum):
 
 TYPE_PAYMENT_CHOICES = [(type.name, type.name) for type in TypePaymentEnum]
 
+class StatusPaymentEnum(Enum):
+    CONFIRMED = 'CONFIRMED'
+    UNCONFIRMED = 'UNCONFIRMED'
+
+STATUS_PAYMENT_CHOICES = [(status.name, status.name) for status in StatusPaymentEnum]
+
 # Create your models here.
 class Payment(models.Model):
     payment_type = models.CharField(max_length=10, choices=TYPE_PAYMENT_CHOICES, default=TypePaymentEnum.DEBIT.name)
@@ -24,14 +30,13 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     current_tariff = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     full_hours = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+    status  = models.CharField(max_length=12, choices=STATUS_PAYMENT_CHOICES, default=StatusPaymentEnum.UNCONFIRMED.name)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if self.payment_type == TypePaymentEnum.DEBIT.name:
             self.handle_debit()
-        elif self.payment_type == TypePaymentEnum.DEPOSIT.name:
-            self.handle_deposit()
-
         super().save(*args, **kwargs)
 
     def handle_debit(self):
@@ -46,7 +51,7 @@ class Payment(models.Model):
             if self.current_tariff:
                 duration_in_hours = session.parking_duration.total_seconds() / 3600  # Перетворення тривалості в години
                 self.full_hours = Decimal(math.ceil(duration_in_hours))
-                self.amount = self.current_tariff * self.full_hours
+                self.amount = -self.current_tariff * self.full_hours
                 print(f'AMOUNT: {self.amount}')
             else:
                 self.amount = 0
@@ -59,18 +64,25 @@ class Payment(models.Model):
                     user = session.vehicle.user
                     account = Account.objects.get(user=user)
                     account.withdraw(self.amount)
-                    account.save()
+                    self.status = StatusPaymentEnum.CONFIRMED.name
+                    # account.save()
             except IntegrityError:
                 raise ValueError("Failed to withdraw the amount from the user's account.")
 
-    def handle_deposit(self):
-        self.amount = 0  # Можливо, потрібно змінити залежно від бізнес-логіки
+    def handle_confirm_deposit(self):
+        if self.payment_type == TypePaymentEnum.DEPOSIT.name:
+            account = Account.objects.get(user=self.user)
+            with transaction.atomic():
+                account.deposit(self.amount)
+                self.status = StatusPaymentEnum.CONFIRMED.name
+                self.save()
+
 
     def formatted_pk(self):
         return f"P-{str(self.pk).zfill(5)}"
 
     def __str__(self):
-        return f"Payment {self.pk} on {self.created_at} for {self.parking_session_pk} by {self.amount}"
+        return f"{self.amount:>10} {CURRENCY}"
 
 
 class Tariff(models.Model):
@@ -79,7 +91,7 @@ class Tariff(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(
         default=datetime.strptime("2999-12-31", "%Y-%m-%d")
-    )
+)
 
     def __str__(self):
         return f'Tariff: {self.price_per_hour} {CURRENCY} per hour'
@@ -95,17 +107,26 @@ class Account(models.Model):
         """
         Поповнює рахунок на вказану суму.
         """
-        self.balance += amount
-        self.save()
-
-    def withdraw(self, amount):
         if amount <= 0:
-            raise ValueError("Withdrawal amount must be positive.")
-        # if amount > self.balance:
-        #     raise ValueError("Insufficient funds.")
+            raise ValueError("Deposit amount must be positive.")
         try:
             with transaction.atomic():
-                self.balance -= amount
+                self.balance += amount
+                self.save()
+        except IntegrityError:
+            raise ValueError("An error occurred while processing the withdrawal.")
+
+        # payment = Payment(user=self.user, payment_type=TypePaymentEnum.DEPOSIT.name, amount=amount)
+        # payment.save()
+        # # self.balance += amount
+        # self.save()
+
+    def withdraw(self, amount):
+        if amount >= 0:
+            raise ValueError("Withdrawal amount must be negative.")
+        try:
+            with transaction.atomic():
+                self.balance += amount
                 self.save()
         except IntegrityError:
             raise ValueError("An error occurred while processing the withdrawal.")
