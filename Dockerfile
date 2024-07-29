@@ -24,7 +24,6 @@ WORKDIR /app
 
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install supervisor
 
 COPY /bot /app/bot
 COPY /config /app/config
@@ -36,9 +35,7 @@ COPY /users /app/users
 COPY /finance /app/finance
 COPY .env /app/.env
 COPY manage.py /app/manage.py
-COPY supervisord.conf /etc/supervisord.conf
 
 EXPOSE 8000
 
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 # CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
