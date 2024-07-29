@@ -158,6 +158,21 @@ def change_password(request):
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'users/change_password.html', {'form': form})
 
+@login_required
+def verify_tg(request, user_id):
+    user = get_object_or_404(CustomUser, pk=user_id)
+    user.is_tg_verified = True
+    user.save()
+    return redirect('users:profile')
+
+@login_required
+def unverify_tg(request, user_id):
+    user = get_object_or_404(CustomUser, pk=user_id)
+    user.is_tg_verified = None
+    user.telegram_id = None
+    user.save()
+    return redirect('users:profile')
+
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm
     template_name = 'users/password_reset.html'
