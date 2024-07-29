@@ -81,8 +81,8 @@ class ParkingSession(models.Model):
 
             return ", ".join(result)
         return ""
-
-      def formatted_pk(self):
+    
+    def formatted_pk(self):
         return f"S-{str(self.pk).zfill(5)}"
 
 
