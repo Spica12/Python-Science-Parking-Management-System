@@ -41,9 +41,9 @@
                             <span style="color: green;">✔ Verified</span>
                         {% else %}
                             <span style="color: red;">❌ Not Verified</span>
-                            <form id="verificationForm" action="{% url 'users:verify_user' user.id %}" method="post" style="margin-top: 10px;">
+                            <form id="verificationForm" action="{% url 'users:verification_email' %}" method="post" style="margin-top: 10px;">
                                 {% csrf_token %}
-                                <button type="submit" class="button">Verify User</button>
+                                <button type="submit" class="button">Send Verification Email</button>
                             </form>
                         {% endif %}
                     </td>

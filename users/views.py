@@ -19,20 +19,6 @@ from .tokens import account_activation_token
 from .utils import send_activation_email
 from .decorators import user_is_active, user_is_verified
 
-    # FOR TESTING DELETE ON RELEASE
-    # FOR TESTING DELETE ON RELEASE
-    # FOR TESTING DELETE ON RELEASE
-@login_required
-def verify_user(request, user_id):
-    user_role = get_object_or_404(UserRole, user_id=user_id)
-    user_role.is_verified = True
-    user_role.save()
-    return redirect('users:profile')
-    # FOR TESTING DELETE ON RELEASE
-    # FOR TESTING DELETE ON RELEASE
-    # FOR TESTING DELETE ON RELEASE
-
-
 def get_user_role(user):
     return get_object_or_404(UserRole, user=user)
 
@@ -128,6 +114,7 @@ def login(request):
         form = LoginForm()
 
     return render(request, 'users/login.html', {'form': form})
+
 def logout(request):
     auth_logout(request)
     return redirect('users:login')
