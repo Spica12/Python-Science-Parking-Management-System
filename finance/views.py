@@ -1,18 +1,23 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.core.paginator import Paginator
 
 from finance.forms import DepositForm, TariffForm
-from finance.models import Account, Tariff, Payment
+from finance.models import Account, StatusPaymentEnum, Tariff, Payment, TypePaymentEnum
 from django.contrib.auth.decorators import login_required
 from adminapp.decorators import admin_required, admin_or_operator_required
+from users.models import UserRole
 
 
 # Create your views here.
 @login_required(login_url="login")
 def get_payments_list_by_user(request):
 
-    payments = Payment.objects.all()
+    user_role = get_object_or_404(UserRole, user=request.user)
+    if user_role.is_admin or user_role.is_operator:
+        payments = Payment.objects.all().order_by('-created_at')
+    else:
+        payments = Payment.objects.filter(user=request.user).order_by('-created_at')
 
     paginator = Paginator(payments, 10)  # Показувати 10 рядків на сторінці
     page_number = request.GET.get('page')
@@ -95,11 +100,28 @@ def deposit_view(request):
         form = DepositForm(request.POST)
         if form.is_valid():
             amount = form.cleaned_data['amount']
-            account = Account.objects.get(user=request.user)
-            account.deposit(amount)
-            # messages.success(request, f'Ваш рахунок було поповнено на {amount} {CURRENCY}.')
-            return redirect('finance:account_my')  # Замініть 'some_view' на ваш URL
+            payment = Payment(
+                user=request.user,
+                payment_type=TypePaymentEnum.DEPOSIT.name,
+                amount=amount
+
+            )
+            payment.save()
+            # account = Account.objects.get(user=request.user)
+            # account.deposit(amount)
+            return redirect('finance:account_my')
     else:
         form = DepositForm()
 
     return render(request, 'finance/account_deposit.html', {'form': form})
+
+
+def confirm_deposit(request, pk):
+
+    try:
+        payment = Payment.objects.get(pk=pk)
+        payment.handle_confirm_deposit()
+    except Tariff.DoesNotExist:
+        payment = None
+
+    return redirect("finance:payments_list_by_user")

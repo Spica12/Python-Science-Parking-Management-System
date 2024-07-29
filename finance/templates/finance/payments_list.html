@@ -7,12 +7,14 @@
 <table>
     <thead>
         <th scope>ID</th>
+        <th scope>Type</th>
         <th scope>Created at</th>
         <th scope>Parking Session ID</th>
         <th scope>Vehicle Number</th>
         <th scope>Amount</th>
-        {% if user.userrole.is_admin or user.userrole.is_operator %}
-            <th scope>Delete</th>
+        <th scope>Status</th>
+        {% if user.userrole.is_admin or user.userrole.is_operator%}
+            <th scope>Confirm</th>
         {% endif %}
     </thead>
     <div class="pagination">
@@ -37,12 +39,18 @@
         {% for payment in page_obj %}
             <tr>
                 <td>{{ payment.formatted_pk }}</td>
+                <td>{{ payment.payment_type }}</td>
                 <td>{{ payment.created_at }}</td>
                 <td>{{ payment.parking_session_pk.formatted_pk }}</td>
                 <td>{{ payment.parking_session_pk.vehicle_plate_number }}</td>
-                <td>{{ payment.amount }}</td>
-                {% if user.userrole.is_admin or user.userrole.is_operator %}
-                    <td><a href="{% url 'finance:payment_delete' pk=payment.pk %}">Delete</a></td>
+                <td>{{ payment }}</td>
+                <td>{{ payment.status }}</td>
+                {% if user.userrole.is_admin or user.userrole.is_operator%}
+                    {% if payment.status == 'UNCONFIRMED' %}
+                        <td><a href="{% url 'finance:payment_confirm' pk=payment.pk %}">Confirm</a></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                 {% endif %}
             </tr>
         {% endfor %}

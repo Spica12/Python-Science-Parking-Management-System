@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from finance.models import Account, Payment
+from finance.models import Account, Payment, TypePaymentEnum
 from parking_service.models import ParkingSession, StatusParkingEnum
 from vehicles.models import Vehicle, StatusVehicleEnum
 from plate_recognition.forms import UploadFileForm, ConfirmPlateForm
@@ -173,7 +173,10 @@ def confirm_plate_number(request):
             logging.debug('session is finished and create Payment')
             session.end_at = timezone.now()
             session.save()
-            payment = Payment(parking_session_pk=session)
+            payment = Payment(
+                user=user,
+                parking_session_pk=session,
+                payment_type=TypePaymentEnum.DEBIT.name)
             payment.save()
 
     # TODO Повернути на головну сторінку: фото на якому буде виділено рамка з номером, номер засобу, дата та час
