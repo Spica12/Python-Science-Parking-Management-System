@@ -41,7 +41,8 @@ if not DEBUG:
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(",")
 CSRF_TRUSTED_ORIGINS = [
-    'https://accurate-josy-spica-40cb5916.koyeb.app/',
+    # 'https://accurate-josy-spica-40cb5916.koyeb.app/',
+    'accurate-josy-spica-40cb5916.koyeb.app/',
 ]
 
 
