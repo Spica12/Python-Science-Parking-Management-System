@@ -6,9 +6,7 @@
 <form method="get" action="{% url 'adminapp:user_management' %}" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
     <div style="position: relative; flex-grow: 1; max-width: 100%;">
         <input type="text" name="query" value="{{ query }}" placeholder="Search by email, nickname, or ID" style="width: 100%; padding-right: 40px;">
-        {% if query %}
-        <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; text-decoration: none; font-size: 35px;">&times;</a>
-        {% endif %}
+        <a href="{% url 'adminapp:vehicles_management' %}" style="position: absolute; right: 15px; top: 35%; transform: translateY(-50%); color: #aaa; text-decoration: none; font-size: 35px;">&times;</a>
     </div>
     <button type="submit" style="width: 120px;">Search</button>
 </form>

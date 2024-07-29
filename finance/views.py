@@ -5,12 +5,12 @@ from django.core.paginator import Paginator
 from finance.forms import DepositForm, TariffForm
 from finance.models import Account, StatusPaymentEnum, Tariff, Payment, TypePaymentEnum
 from django.contrib.auth.decorators import login_required
-from adminapp.decorators import admin_required, admin_or_operator_required
+from adminapp.decorators import admin_or_operator_required
+from users.decorators import user_is_verified
 from users.models import UserRole
 
 
-# Create your views here.
-@login_required(login_url="login")
+@user_is_verified
 def get_payments_list_by_user(request):
 
     user_role = get_object_or_404(UserRole, user=request.user)
@@ -84,7 +84,7 @@ def delete_tariff(request, pk):
 
     return redirect("finance:tariffs_list")
 
-@login_required(login_url="login")
+@user_is_verified
 def get_my_account(request):
     user = request.user
     account = Account.objects.get(user=user)
@@ -94,7 +94,7 @@ def get_my_account(request):
     }
     return render(request, "finance/account_my.html", context=context)
 
-@login_required(login_url="login")
+@user_is_verified
 def deposit_view(request):
     if request.method == 'POST':
         form = DepositForm(request.POST)
@@ -115,7 +115,7 @@ def deposit_view(request):
 
     return render(request, 'finance/account_deposit.html', {'form': form})
 
-
+@admin_or_operator_required
 def confirm_deposit(request, pk):
 
     try:
@@ -124,4 +124,4 @@ def confirm_deposit(request, pk):
     except Tariff.DoesNotExist:
         payment = None
 
-    return redirect("finance:payments_list_by_user")
+    return redirect("adminapp:payments_management")

@@ -14,7 +14,6 @@ from vehicles.utils import get_total_parking_duration
 from users.decorators import user_is_verified, user_is_admin_or_operator
 from users.models import CustomUser
 
-# @user_is_verified (Replace login_required)
 @user_is_verified
 def get_vehicles(request):
 
@@ -35,7 +34,6 @@ def get_vehicles(request):
 
     return render(request, "vehicles/vehicles.html", context=context)
 
-# @user_is_verified (Replace login_required)
 @admin_or_operator_required
 def add_vehicle(request):
     users = CustomUser.objects.all()
@@ -61,22 +59,8 @@ def add_vehicle(request):
 
     return render(request, "vehicles/new_vehicle.html", context=context)
 
-# @user_is_verified (Replace login_required)
-@login_required(login_url="login")
-def del_vehicle(request, pk):
-    # vehicle = get_object_or_404(Vehicle, pk=pk)
-    try:
-        vehicle = Vehicle.objects.get(pk=pk)
-    except Vehicle.DoesNotExist:
-        vehicle = None
 
-    if vehicle is not None:
-        vehicle.delete()
-
-    return redirect("vehicles:vehicles")
-
-# @user_is_verified (Replace login_required)
-@login_required(login_url="login")
+@user_is_verified
 def detail_vehicle(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     # try:
@@ -100,7 +84,7 @@ def detail_vehicle(request, pk):
     }
     return render(request, "vehicles/detail_vehicle.html", context=context)
 
-@login_required(login_url="login")
+@user_is_verified
 def generate_report(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     records = ParkingSession.objects.filter(vehicle=vehicle).order_by('started_at')
