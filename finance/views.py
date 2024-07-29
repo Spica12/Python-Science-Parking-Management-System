@@ -12,7 +12,7 @@ from adminapp.decorators import admin_required, admin_or_operator_required
 @login_required(login_url="login")
 def get_payments_list_by_user(request):
 
-    payments = Payment.objects.all()
+    payments = Payment.objects.all().order_by('-created_at')
 
     paginator = Paginator(payments, 10)  # Показувати 10 рядків на сторінці
     page_number = request.GET.get('page')

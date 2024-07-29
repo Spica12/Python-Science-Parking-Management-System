@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 import math
+from enum import Enum
 from django.db import models
 from parking_service.models import ParkingSession
 from users.models import CustomUser
@@ -10,8 +11,15 @@ from django.db import transaction, IntegrityError
 CURRENCY = 'UAH'
 BALANCE_LIMIT = -100
 
+class TypePaymentEnum(Enum):
+    DEBIT = 'DEBIT'
+    DEPOSIT = 'DEPOSIT'
+
+TYPE_PAYMENT_CHOICES = [(type.name, type.name) for type in TypePaymentEnum]
+
 # Create your models here.
 class Payment(models.Model):
+    payment_type = models.CharField(max_length=10, choices=TYPE_PAYMENT_CHOICES, default=TypePaymentEnum.DEBIT.name)
     parking_session_pk = models.ForeignKey(ParkingSession, on_delete=models.SET_NULL, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     current_tariff = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -19,6 +27,14 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        if self.payment_type == TypePaymentEnum.DEBIT.name:
+            self.handle_debit()
+        elif self.payment_type == TypePaymentEnum.DEPOSIT.name:
+            self.handle_deposit()
+
+        super().save(*args, **kwargs)
+
+    def handle_debit(self):
         session = ParkingSession.objects.filter(pk=self.parking_session_pk.pk).first()
         if session and session.started_at and session.parking_duration:
             tariff = Tariff.objects.filter(
@@ -33,12 +49,8 @@ class Payment(models.Model):
                 self.amount = self.current_tariff * self.full_hours
                 print(f'AMOUNT: {self.amount}')
             else:
-                # Обробка випадку, коли тариф не знайдено
-                # print('Tariff not found for the given session time.')
                 self.amount = 0
         else:
-            # Обробка випадку, коли session або її поля не визначені
-            # print('Invalid parking session or duration.')
             self.amount = 0
 
         if session:
@@ -49,18 +61,16 @@ class Payment(models.Model):
                     account.withdraw(self.amount)
                     account.save()
             except IntegrityError:
-                # Handle the case where the withdrawal fails, perhaps log an error or alert the user
                 raise ValueError("Failed to withdraw the amount from the user's account.")
 
-        super().save(*args, **kwargs)
-
-
+    def handle_deposit(self):
+        self.amount = 0  # Можливо, потрібно змінити залежно від бізнес-логіки
 
     def formatted_pk(self):
         return f"P-{str(self.pk).zfill(5)}"
 
     def __str__(self):
-        return f"Payment {self.pk} on {self.datetime} for {self.parking_session_pk} by {self.amount}"
+        return f"Payment {self.pk} on {self.created_at} for {self.parking_session_pk} by {self.amount}"
 
 
 class Tariff(models.Model):

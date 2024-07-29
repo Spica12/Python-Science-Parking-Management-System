@@ -7,6 +7,7 @@
 <table>
     <thead>
         <th scope>ID</th>
+        <th scope>Type</th>
         <th scope>Created at</th>
         <th scope>Parking Session ID</th>
         <th scope>Vehicle Number</th>
@@ -37,6 +38,7 @@
         {% for payment in page_obj %}
             <tr>
                 <td>{{ payment.formatted_pk }}</td>
+                <td>{{ payment.payment_type }}</td>
                 <td>{{ payment.created_at }}</td>
                 <td>{{ payment.parking_session_pk.formatted_pk }}</td>
                 <td>{{ payment.parking_session_pk.vehicle_plate_number }}</td>
