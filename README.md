@@ -113,26 +113,6 @@ docker-compose up --build
 3. Python Developer [Pelmenoff](https://github.com/Pelmenoff)
 4. Python Developer [Vladyslav Bondarenko](https://github.com/VladyslavBon)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Screenshots
 <details open>
 <summary>Реєстрація та вхід</summary>
