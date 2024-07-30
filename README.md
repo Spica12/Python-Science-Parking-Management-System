@@ -23,21 +23,140 @@ Parking Management System - це система автоматично визн�
 - Візуалізація про кількість вільних та зайнятих паркомісць.
 
 
-## Головна сторінка
+## Screenshots
+<details open>
+<summary>Реєстрація та вхід</summary>
+
+Головна сторінка
 
 <div align="left" width="569" height="285">
   <img src="readme_screenshots/parking_spots.png">
 </div>
 
-## Реєстрація
+Реєстрація
 
-##
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/sign_up.png">
+</div>
+
+Вхід в застосунок
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/login.png">
+</div>
+
+</details>
+<details open>
+<summary>Admin</summary>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_profile.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_profile_manage.png">
+</div>
+
+</details>
+
+<details open>
+<summary>Admin Panel</summary>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_panel.png">
+</div>
 
 
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_user_management.png">
+</div>
 
+Parking tariffs
 
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_list_tariffs.png">
+</div>
 
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_add_tariff.png">
+</div>
 
+Vehicles Management
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_vehicles_management.png">
+</div>
+
+Payments Management
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_payments_management.png">
+</div>
+
+Parking Spot
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_parking_spot_list.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_add_new_parking_spot.png">
+</div>
+
+</details>
+
+<details open>
+<summary>User</summary>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_profile.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_profile_manage.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_change_password.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_reset_password.png">
+</div>
+
+User vehicles
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_my_vehicles.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_detail_vehicle.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_detail_parking_session.png">
+</div>
+
+User payments
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_payments_list.png">
+</div>
+
+User account
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_my_account.png">
+</div>
+
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_my_account_deposit.png">
+</div>
+
+</details>
+
+</details>
 
 
 
