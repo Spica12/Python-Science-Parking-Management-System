@@ -17,19 +17,14 @@ pillow = "^10.4.0"
 numpy = "1.26.4"
 opencv-python-headless = {version = "^4.9.0.80", platform = "linux"}
 opencv-python = {version = "^4.9.0.80", platform = "win32 || darwin"}
-tensorflow-io-gcs-filesystem = [
-    { version = "^0.31", markers = "sys_platform == 'win32'" },
-    { version = "~0.37", markers = "sys_platform == 'linux' or sys_platform == 'darwin'" }
-]
-tensorflow-cpu = [
-    { version = "~2.15", markers = "sys_platform == 'win32'" },
-    { version = "^2.16.1", markers = "sys_platform == 'linux' or sys_platform == 'darwin'" }
-]
+tflite = "^2.10.0"
 keras = [
     { version = "~2", markers = "sys_platform == 'win32'" },
     { version = "^3.3.3", markers = "sys_platform == 'linux' or sys_platform == 'darwin'" }
 ]
 whitenoise = "^6.7.0"
+
+
 
 
 [build-system]
