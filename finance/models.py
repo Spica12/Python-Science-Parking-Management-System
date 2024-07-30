@@ -132,4 +132,4 @@ class Account(models.Model):
             raise ValueError("An error occurred while processing the withdrawal.")
 
     def check_balance_limit(self):
-        self.balance <= BALANCE_LIMIT
+        return self.balance <= BALANCE_LIMIT

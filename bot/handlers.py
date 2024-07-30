@@ -12,7 +12,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, FSInputFil
 
 from users.models import CustomUser
 from parking_service.models import Vehicle, ParkingSession
-from finance.models import Payment
+from finance.models import Account, Payment
 from . import keyboards
 from . import text
 
@@ -98,34 +98,42 @@ def setup(router: Router, bot):
         except Vehicle.DoesNotExist:
             await clbck.message.answer(text.dont_have_car, reply_markup=keyboards.exit_kb)
             
+    async def monitor_balance(clbck: CallbackQuery, user):
+        notified = False
+        while True:
+            balance = await sync_to_async(Account.objects.get)(user=user)
+            if balance.check_balance_limit():
+                if not notified:
+                    await clbck.message.answer(text.limits_alert)
+                    notified = True
+            else:
+                notified = False
+            await asyncio.sleep(5)
     
     @router.callback_query(F.data == "parking_messages")
     async def input_parking_messages(clbck: CallbackQuery):
         user = await sync_to_async(CustomUser.objects.get)(telegram_id=clbck.from_user.id)
-        
-        vehicles = await sync_to_async(list)(Vehicle.objects.filter(user=user))
-        inline_keyboard = []
-        if vehicles:
-            for vehicle in vehicles:
-                button = [InlineKeyboardButton(text=vehicle.plate_number, callback_data=f'messages_{vehicle.id}')]
-                inline_keyboard.append(button)
-            inline_keyboard.append([InlineKeyboardButton(text="◀️ Повернутись назад", callback_data="menu")])
-            vehicle_list = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
-            await clbck.message.answer(text.license_plate, reply_markup=vehicle_list)
-        else:
-            await clbck.message.answer(text.dont_have_car, reply_markup=keyboards.exit_kb)
-        
-    @router.callback_query(lambda car: car.data and car.data.startswith('messages_'))
-    async def process_callback_parking_messages(clbck: CallbackQuery):
-        vehicle_id = int(clbck.data.split('_')[1])
-        vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
-        # records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
-        # all_sessions_data = []
-        # for record in records:
-        #     payment = await sync_to_async(Payment.objects.get(parking_session_pk_id=record.id))
-        #     all_sessions_data.append(payment)
-        
         await clbck.message.answer(text.ok_message, reply_markup=keyboards.exit_kb)
+        asyncio.create_task(monitor_balance(clbck, user))
+        
+        # vehicles = await sync_to_async(list)(Vehicle.objects.filter(user=user))
+        # inline_keyboard = []
+        # if vehicles:
+        #     for vehicle in vehicles:
+        #         button = [InlineKeyboardButton(text=vehicle.plate_number, callback_data=f'messages_{vehicle.id}')]
+        #         inline_keyboard.append(button)
+        #     inline_keyboard.append([InlineKeyboardButton(text="◀️ Повернутись назад", callback_data="menu")])
+        #     vehicle_list = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        #     await clbck.message.answer(text.license_plate, reply_markup=vehicle_list)
+        # else:
+        #     await clbck.message.answer(text.dont_have_car, reply_markup=keyboards.exit_kb)
+        
+    # @router.callback_query(lambda car: car.data and car.data.startswith('messages_'))
+    # async def process_callback_parking_messages(clbck: CallbackQuery):
+    #     vehicle_id = int(clbck.data.split('_')[1])
+    #     vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
+    #     await clbck.message.answer(text.ok_message, reply_markup=keyboards.exit_kb)
+    #     asyncio.create_task(monitor_balance(clbck, vehicle))
         
     @router.callback_query(F.data == "report")
     async def input_report(clbck: CallbackQuery):
