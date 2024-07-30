@@ -22,6 +22,16 @@ Parking Management System - це система автоматично визн�
 - Генерація звітів про розрахунки, які можна експортувати у форматі CSV.
 - Візуалізація кількості вільних та зайнятих паркомісць.
 
+## Архітектура проекту
+
+Проект побудований з використанням наступних технологій та компонентів:
+
+- **Django**: для створення основного веб-застосунку.
+- **TensorFlow/Keras**: для реалізації моделі комп'ютерного зору.
+- **OpenCV**: для обробки зображень та детекції номерних знаків.
+- **PostgreSQL**: для зберігання даних.
+- **Docker**: для контейнеризації та спрощення розгортання.
+- **Docker Compose**: для управління кількома контейнерами.
 
 ## Install
 
@@ -40,7 +50,7 @@ git clone https://github.com/Spica12/Python-Science-Parking-Management-System.gi
 ```
 poetry config --local virtualenvs.in-project true
 
-C:\Users\user\AppData\Local\Programs\Python\Python311\python.exe -m venv .venv
+python -m venv .venv
 
 poetry env use .venv\Scripts\python.exe
 ```
@@ -126,134 +136,104 @@ docker-compose up --build
 ## Screenshots
 <details open>
 <summary>Реєстрація та вхід</summary>
-
 Головна сторінка
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/parking_spots.png">
+  <img src="readme_screenshots/parking_spots.png" alt="Головна сторінка">
 </div>
-
 Реєстрація
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/sign_up.png">
+  <img src="readme_screenshots/sign_up.png" alt="Реєстрація">
 </div>
-
 Вхід в застосунок
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/login.png">
+  <img src="readme_screenshots/login.png" alt="Вхід в застосунок">
 </div>
-
 </details>
 <details open>
 <summary>Admin</summary>
-
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_profile.png">
+  <img src="readme_screenshots/admin_profile.png" alt="Admin Profile">
 </div>
-
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_profile_manage.png">
+  <img src="readme_screenshots/admin_profile_manage.png" alt="Admin Profile Management">
 </div>
-
 </details>
-
 <details open>
 <summary>Admin Panel</summary>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_panel.png" alt="Admin Panel">
+</div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/admin_user_management.png" alt="User Management">
+</div>
+Parking Tariffs
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_panel.png">
+  <img src="readme_screenshots/admin_list_tariffs.png" alt="List Tariffs">
 </div>
-
-
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_user_management.png">
+  <img src="readme_screenshots/admin_add_tariff.png" alt="Add Tariff">
 </div>
-
-Parking tariffs
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_list_tariffs.png">
-</div>
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_add_tariff.png">
-</div>
-
 Vehicles Management
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_vehicles_management.png">
+  <img src="readme_screenshots/admin_vehicles_management.png" alt="Vehicles Management">
 </div>
-
 Payments Management
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_payments_management.png">
+  <img src="readme_screenshots/admin_payments_management.png" alt="Payments Management">
 </div>
-
 Parking Spot
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_parking_spot_list.png">
+  <img src="readme_screenshots/admin_parking_spot_list.png" alt="Parking Spot List">
 </div>
-
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/admin_add_new_parking_spot.png">
+  <img src="readme_screenshots/admin_add_new_parking_spot.png" alt="Add New Parking Spot">
 </div>
-
 </details>
-
 <details open>
 <summary>User</summary>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_profile.png" alt="User Profile">
+</div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_profile_manage.png" alt="User Profile Management">
+</div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_change_password.png" alt="Change Password">
+</div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_reset_password.png" alt="Reset Password">
+</div>
+User Vehicles
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_profile.png">
+  <img src="readme_screenshots/user_my_vehicles.png" alt="My Vehicles">
 </div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_detail_vehicle.png" alt="Vehicle Details">
+</div>
+<div align="left" width="569" height="285">
+  <img src="readme_screenshots/user_detail_parking_session.png" alt="Parking Session Details">
+</div>
+User Payments
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_profile_manage.png">
+  <img src="readme_screenshots/user_payments_list.png" alt="Payments List">
 </div>
+User Account
 
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_change_password.png">
+  <img src="readme_screenshots/user_my_account.png" alt="My Account">
 </div>
-
 <div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_reset_password.png">
+  <img src="readme_screenshots/user_my_account_deposit.png" alt="Account Deposit">
 </div>
-
-User vehicles
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_my_vehicles.png">
-</div>
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_detail_vehicle.png">
-</div>
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_detail_parking_session.png">
-</div>
-
-User payments
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_payments_list.png">
-</div>
-
-User account
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_my_account.png">
-</div>
-
-<div align="left" width="569" height="285">
-  <img src="readme_screenshots/user_my_account_deposit.png">
-</div>
-
 </details>
 
 </details>
