@@ -2,7 +2,12 @@
 name = "python-science-parking-management-system"
 version = "0.1.0"
 description = "Parking management system based on a computer vision model"
-authors = ["Vitalii Savenko <vitaly.savenko12@gmail.com>"]
+authors = [
+    "Team Lead <https://github.com/Spica12>",
+    "Scrum Master <https://github.com/Klepats>",
+    "Developer <https://github.com/Pelmenoff>",
+    "Developer <https://github.com/VladyslavBon>",
+]
 readme = "README.md"
 
 [tool.poetry.dependencies]
