@@ -29,7 +29,9 @@ Parking Management System - це система автоматично визн�
   <img src="readme_screenshots/parking_spots.png">
 </div>
 
+## Реєстрація
 
+##
 
 
 
