@@ -100,8 +100,8 @@ docker-compose up --build
 
 1. Team Lead [Spica12](https://github.com/Spica12)
 2. Scrum Master [Dmytro Klepats](https://github.com/Klepats)
-3. Developer [Pelmenoff](https://github.com/Pelmenoff)
-4. Developer [Vladyslav Bondarenko](https://github.com/VladyslavBon)
+3. Python Developer [Pelmenoff](https://github.com/Pelmenoff)
+4. Python Developer [Vladyslav Bondarenko](https://github.com/VladyslavBon)
 
 
 
