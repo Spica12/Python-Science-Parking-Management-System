@@ -3,12 +3,14 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
+from datetime import datetime
 from users.models import CustomUser, UserRole
 from vehicles.models import Vehicle, StatusVehicleEnum
 from adminapp.decorators import admin_required, admin_or_operator_required
 from users.decorators import user_is_active
 from adminapp.forms import AddParkingSpotsForm
 from parking_service.models import ParkingSpot
+from finance.models import Payment
 
 @user_is_active
 @admin_or_operator_required
@@ -75,6 +77,45 @@ def vehicles_management(request):
         'user_is_admin': request.user.userrole.is_admin
     })
 
+@admin_or_operator_required
+def payments_management(request):
+    query = request.GET.get('query', '')
+    type_filter = request.GET.get('type_filter', '')
+    status_filter = request.GET.get('status_filter', '')
+    date_filter = request.GET.get('date_filter', '')
+
+    payments = Payment.objects.all()
+
+    if query:
+        if query.startswith('P-'):
+            payments = payments.filter(id=query[2:])
+        else:
+            payments = payments.filter(
+                Q(id__icontains=query) | Q(id__icontains=int(query))
+            )
+
+    if type_filter:
+        payments = payments.filter(payment_type=type_filter)
+    
+    if status_filter:
+        payments = payments.filter(status=status_filter)
+    
+    if date_filter:
+        payments = payments.filter(created_at__date=date_filter)
+
+    payments = payments.order_by('-id')
+
+    paginator = Paginator(payments, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'adminapp/payments_management.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'type_filter': type_filter,
+        'status_filter': status_filter,
+        'date_filter': date_filter,
+    })
 
 @require_POST
 @admin_or_operator_required

@@ -13,9 +13,6 @@
         <th scope>Vehicle Number</th>
         <th scope>Amount</th>
         <th scope>Status</th>
-        {% if user.userrole.is_admin or user.userrole.is_operator%}
-            <th scope>Confirm</th>
-        {% endif %}
     </thead>
     <div class="pagination">
         <span class="step-links">

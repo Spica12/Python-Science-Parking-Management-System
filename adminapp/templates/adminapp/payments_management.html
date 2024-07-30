@@ -1,0 +1,76 @@
+{% extends "parking_service/base.html" %}
+
+{% block content %}
+<h1 style="display: flex; align-items: center;">
+    Payments Management
+</h1>
+<form method="GET" action="{% url 'adminapp:payments_management' %}" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <div style="position: relative; flex-grow: 1; max-width: 100%;">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search by Payment ID" style="width: 100%; padding-right: 40px;">
+        <a href="{% url 'adminapp:payments_management' %}" style="position: absolute; right: 15px; top: 35%; transform: translateY(-50%); color: #aaa; text-decoration: none; font-size: 35px;">&times;</a>
+    </div>
+    <input type="date" name="date_filter" value="{{ date_filter }}" style="width: 220px;">
+    <select name="type_filter" id="type_filter" style="width: 180px;">
+        <option value="" {% if not type_filter %}selected{% endif %}>All types</option>
+        <option value="DEBIT" {% if type_filter == "DEBIT" %}selected{% endif %}>DEBIT</option>
+        <option value="DEPOSIT" {% if type_filter == "DEPOSIT" %}selected{% endif %}>DEPOSIT</option>
+    </select>
+    <select name="status_filter" id="status_filter" style="width: 230px;">
+        <option value="" {% if not status_filter %}selected{% endif %}>All statuses</option>
+        <option value="CONFIRMED" {% if status_filter == "CONFIRMED" %}selected{% endif %}>CONFIRMED</option>
+        <option value="UNCONFIRMED" {% if status_filter == "UNCONFIRMED" %}selected{% endif %}>UNCONFIRMED</option>
+    </select>
+    <button type="submit" style="width: 120px;">Search</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Created at</th>
+            <th>Parking Session ID</th>
+            <th>Vehicle Number</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Confirm</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payment in page_obj %}
+            <tr>
+                <td>{{ payment.formatted_pk }}</td>
+                <td>{{ payment.payment_type }}</td>
+                <td>{{ payment.created_at }}</td>
+                <td>{{ payment.parking_session_pk.formatted_pk }}</td>
+                <td>{{ payment.parking_session_pk.vehicle_plate_number }}</td>
+                <td>{{ payment }}</td>
+                <td>{{ payment.status }}</td>
+                {% if payment.status == 'UNCONFIRMED' %}
+                    <td><a href="{% url 'finance:payment_confirm' pk=payment.pk %}">Confirm</a></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if type_filter %}&type_filter={{ type_filter }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if type_filter %}&type_filter={{ type_filter }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if type_filter %}&type_filter={{ type_filter }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if type_filter %}&type_filter={{ type_filter }}{% endif %}{% if status_filter %}&status_filter={{ status_filter }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

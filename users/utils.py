@@ -12,7 +12,7 @@ def send_activation_email(user, request):
     try:
         current_site = request.get_host()
         mail_subject = 'Activate your account'
-        html_message = render_to_string('activation_email.html', {
+        html_message = render_to_string('users/activation_email.html', {
             'user': user,
             'domain': current_site,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
