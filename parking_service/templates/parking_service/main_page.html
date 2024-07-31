@@ -14,9 +14,9 @@
                 </header>
                 {% if spot.vehicle %}
                 <p style="font-size: 0.9em; margin: 0;">
-                    Vehicle Plate: 
-                    <a href="{% url 'parking_service:detail_session' pk=spot.vehicle.id %}" 
-                       style="color: #0172ad; text-decoration: none; font-weight: bold; 
+                    Vehicle Plate:
+                    <a href="{% url 'vehicles:detail_vehicle' pk=spot.vehicle.pk %}"
+                       style="color: #0172ad; text-decoration: none; font-weight: bold;
                               border-bottom: 1px dashed #0172ad;">
                         {{ spot.vehicle.plate_number }}
                     </a>
@@ -29,16 +29,16 @@
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 20px;">
             {% if parking_spots.has_previous %}
-            <a href="?page={{ parking_spots.previous_page_number }}" 
-               style="text-decoration: none; padding: 10px 20px; background-color: #0172ad; color: white; 
+            <a href="?page={{ parking_spots.previous_page_number }}"
+               style="text-decoration: none; padding: 10px 20px; background-color: #0172ad; color: white;
                       border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                 Previous
             </a>
             {% endif %}
             <span style="padding: 10px 20px;">Page {{ parking_spots.number }} of {{ parking_spots.paginator.num_pages }}</span>
             {% if parking_spots.has_next %}
-            <a href="?page={{ parking_spots.next_page_number }}" 
-               style="text-decoration: none; padding: 10px 20px; background-color: #0172ad; color: white; 
+            <a href="?page={{ parking_spots.next_page_number }}"
+               style="text-decoration: none; padding: 10px 20px; background-color: #0172ad; color: white;
                       border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                 Next
             </a>
@@ -49,7 +49,7 @@
         <h2 style="text-align: center;">Current Tariffs</h2>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
             {% for tariff in tariffs %}
-            <div style="width: 150px; padding: 10px; border: 2px solid #444; border-radius: 10px; 
+            <div style="width: 150px; padding: 10px; border: 2px solid #444; border-radius: 10px;
                         background-color: #e0f7fa; text-align: center;">
                 <p style="font-size: 1em; margin: 0;">{{ tariff.description }}</p>
                 <p style="font-size: 0.9em; margin: 5px 0;">{{ tariff.price_per_hour }} грн/год</p>
