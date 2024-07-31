@@ -9,7 +9,7 @@ from django.db import transaction, IntegrityError
 
 
 CURRENCY = 'UAH'
-BALANCE_LIMIT = -100
+BALANCE_LIMIT = -10
 
 class TypePaymentEnum(Enum):
     DEBIT = 'DEBIT'
