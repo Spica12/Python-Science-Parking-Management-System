@@ -11,7 +11,7 @@ from asgiref.sync import sync_to_async
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
 
 from users.models import CustomUser
-from parking_service.models import Vehicle, ParkingSession
+from parking_service.models import StatusParkingEnum, Vehicle, ParkingSession
 from finance.models import Account, Payment
 from . import keyboards
 from . import text
@@ -116,25 +116,6 @@ def setup(router: Router, bot):
         await clbck.message.answer(text.ok_message, reply_markup=keyboards.exit_kb)
         asyncio.create_task(monitor_balance(clbck, user))
         
-        # vehicles = await sync_to_async(list)(Vehicle.objects.filter(user=user))
-        # inline_keyboard = []
-        # if vehicles:
-        #     for vehicle in vehicles:
-        #         button = [InlineKeyboardButton(text=vehicle.plate_number, callback_data=f'messages_{vehicle.id}')]
-        #         inline_keyboard.append(button)
-        #     inline_keyboard.append([InlineKeyboardButton(text="◀️ Повернутись назад", callback_data="menu")])
-        #     vehicle_list = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
-        #     await clbck.message.answer(text.license_plate, reply_markup=vehicle_list)
-        # else:
-        #     await clbck.message.answer(text.dont_have_car, reply_markup=keyboards.exit_kb)
-        
-    # @router.callback_query(lambda car: car.data and car.data.startswith('messages_'))
-    # async def process_callback_parking_messages(clbck: CallbackQuery):
-    #     vehicle_id = int(clbck.data.split('_')[1])
-    #     vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
-    #     await clbck.message.answer(text.ok_message, reply_markup=keyboards.exit_kb)
-    #     asyncio.create_task(monitor_balance(clbck, vehicle))
-        
     @router.callback_query(F.data == "report")
     async def input_report(clbck: CallbackQuery):
         user = await sync_to_async(CustomUser.objects.get)(telegram_id=clbck.from_user.id)
@@ -155,7 +136,7 @@ def setup(router: Router, bot):
     async def process_callback_report(clbck: CallbackQuery):
         vehicle_id = int(clbck.data.split('_')[1])
         vehicle = await sync_to_async(Vehicle.objects.get)(id=vehicle_id)
-        records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id))
+        records = await sync_to_async(list)(ParkingSession.objects.filter(vehicle_id=vehicle.id, status=StatusParkingEnum.FINISHED.name))
         if records:
             records = sorted(records, key=lambda x: x.started_at)
             all_sessions_data = []

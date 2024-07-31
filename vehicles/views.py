@@ -87,7 +87,7 @@ def detail_vehicle(request, pk):
 @user_is_verified
 def generate_report(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
-    records = ParkingSession.objects.filter(vehicle=vehicle).order_by('started_at')
+    records = ParkingSession.objects.filter(vehicle=vehicle, status=StatusParkingEnum.FINISHED.name).order_by('started_at')
 
     all_sessions_data = []
     for record in records:
